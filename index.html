@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>2027 Smart E-Mobility Team Garage</title>
+  <title>Team_Dynamics - 한남대학교 자작자동차 동아리</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Font Awesome Icons -->
@@ -78,12 +78,6 @@
       box-shadow: 0 0 25px -5px rgba(57, 255, 20, 0.35);
     }
 
-    /* Garage Isometric Floor Perspective */
-    .garage-stage {
-      perspective: 1200px;
-      transform-style: preserve-3d;
-    }
-    
     /* Interactive Hotspot Marker Pulse */
     .hotspot-ring::after {
       content: '';
@@ -94,27 +88,14 @@
       animation: ping 1.8s cubic-bezier(0, 0, 0.2, 1) infinite;
       opacity: 0.75;
     }
-
-    /* Scanline Overlay */
-    .crt-overlay::before {
-      content: " ";
-      display: block;
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
-      z-index: 2;
-      pointer-events: none;
-      opacity: 0.3;
-    }
   </style>
 </head>
 <body class="bg-pit-bg text-slate-100 min-h-screen overflow-x-hidden selection:bg-cyan-500 selection:text-black font-sans relative">
 
-  <!-- Background Canvas for Weather Effects (Rain, Dust, Neon Ambience) -->
+  <!-- Background Canvas for Weather Effects -->
   <canvas id="weatherCanvas" class="fixed inset-0 pointer-events-none z-10 w-full h-full"></canvas>
 
-  <!-- Ambient Audio Indicator / Toast Notification -->
+  <!-- Toast Notification -->
   <div id="toastNotification" class="fixed bottom-6 right-6 z-50 bg-slate-900/95 border border-cyan-500/40 px-4 py-3 rounded-xl shadow-2xl backdrop-blur-md flex items-center space-x-3 transform translate-y-20 opacity-0 transition-all duration-300">
     <i class="fa-solid fa-bell text-cyan-400" id="toastIcon"></i>
     <span class="text-sm font-medium tracking-wide text-slate-200" id="toastMsg">차고지 시스템 준비 완료</span>
@@ -124,38 +105,37 @@
   <header class="relative z-20 border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-md sticky top-0 px-4 lg:px-8 py-3">
     <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
       
-      <!-- Brand & Status -->
+      <!-- Brand & Status (요청 반영: Team_Dynamics / 한남대학교 자작자동차 동아리) -->
       <div class="flex items-center space-x-3">
         <div class="w-10 h-10 rounded-lg bg-gradient-to-tr from-cyan-600 to-blue-500 flex items-center justify-center font-tech font-bold text-xl text-black shadow-lg shadow-cyan-500/30">
           ⚡
         </div>
         <div>
           <div class="flex items-center space-x-2">
-            <h1 class="font-tech text-lg sm:text-xl font-bold tracking-wider text-white">KSAE E-PIT <span class="text-cyan-400">2027</span></h1>
+            <h1 class="font-tech text-lg sm:text-xl font-bold tracking-wider text-white">Team_Dynamics</h1>
             <span class="px-2 py-0.5 text-[10px] font-mono rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
-              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> LIVE PADDOCK
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span> v13.0 MASTER
             </span>
           </div>
-          <p class="text-xs text-slate-400 font-mono hidden sm:block">전기차 레이싱 개발팀 온라인 워크스테이션</p>
+          <p class="text-xs text-slate-400 font-mono">한남대학교 자작자동차 동아리</p>
         </div>
       </div>
 
       <!-- Center: D-Day & Countdown -->
       <div class="flex items-center bg-slate-900/90 border border-slate-800 rounded-xl px-4 py-1.5 space-x-4 shadow-inner">
         <div class="text-center">
-          <span class="text-[10px] font-mono text-cyan-400 tracking-wider block">대회 개막 D-DAY</span>
-          <span id="ddayCount" class="font-tech text-xl sm:text-2xl font-bold text-white tracking-widest text-shadow">D-342</span>
+          <span class="text-[10px] font-mono text-cyan-400 tracking-wider block">2027 KSAE 대회 D-DAY</span>
+          <span id="ddayCount" class="font-tech text-xl sm:text-2xl font-bold text-white tracking-widest">D-342</span>
         </div>
         <div class="h-7 w-px bg-slate-800"></div>
         <div class="text-right">
           <span class="text-[10px] font-mono text-slate-400 block" id="currentDateStr">2026. 10. 24</span>
-          <span class="font-mono text-xs sm:text-sm font-semibold text-cyan-300" id="liveClock">10:00:00</span>
+          <span class="font-mono text-xs sm:text-sm font-semibold text-cyan-300" id="liveClock">14:00:00</span>
         </div>
       </div>
 
       <!-- Right: Weather Modes & Audio Toggle -->
       <div class="flex items-center space-x-2">
-        <!-- Weather Presets -->
         <div class="flex bg-slate-900 p-1 rounded-lg border border-slate-800 text-xs">
           <button id="btnSun" onclick="setWeather('sun')" class="weather-btn active px-2.5 py-1.5 rounded-md hover:text-white transition flex items-center gap-1.5 bg-cyan-500 text-black font-semibold">
             <i class="fa-solid fa-sun text-amber-300"></i><span class="hidden md:inline">맑음</span>
@@ -168,7 +148,6 @@
           </button>
         </div>
 
-        <!-- Sound FX Button -->
         <button id="soundToggle" onclick="toggleAudio()" title="효과음 켜기/끄기" class="w-9 h-9 rounded-lg bg-slate-900 border border-slate-800 hover:border-cyan-500/50 text-slate-300 flex items-center justify-center transition">
           <i class="fa-solid fa-volume-high text-cyan-400" id="soundIcon"></i>
         </button>
@@ -177,32 +156,31 @@
     </div>
   </header>
 
-  <!-- QUICK NAVIGATION PILLS (For easy mobile/direct jumping) -->
+  <!-- QUICK NAVIGATION PILLS -->
   <div class="relative z-20 max-w-7xl mx-auto px-4 pt-4">
     <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none text-xs font-mono">
       <span class="text-slate-500 text-[11px] whitespace-nowrap pl-1">구역 바로가기:</span>
       <button onclick="openModal('vehicleModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-cyan-400 hover:text-cyan-400 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-car-side text-cyan-400"></i> [1] EV 머신 제원
+        <i class="fa-solid fa-car-side text-cyan-400"></i> [1] 58VDY27 머신 제원
       </button>
       <button onclick="openModal('strategyModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-amber-400 hover:text-amber-400 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-chalkboard text-amber-400"></i> [2] 작전 화이트보드
+        <i class="fa-solid fa-chalkboard text-amber-400"></i> [2] 작전 화이트보드 (부서 편집)
       </button>
-      <button onclick="openModal('telemetryModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-emerald-400 hover:text-emerald-400 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-chart-line text-emerald-400"></i> [3] 텔레메트리 랩탑
+      <button onclick="openModal('analysisModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-emerald-400 hover:text-emerald-400 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-cubes-stacked text-emerald-400"></i> [3] 해석 (ANSYS & CFD)
       </button>
-      <button onclick="openModal('toolsModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-rose-400 hover:text-rose-400 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-wrench text-rose-400"></i> [4] 검차 체크리스트
+      <button onclick="openModal('wiringModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-rose-400 hover:text-rose-400 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-microchip text-rose-400"></i> [4] 배선 (하네스 & 펌웨어)
       </button>
-      <button onclick="openModal('cabinetModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-blue-400 hover:text-blue-400 transition flex items-center gap-1.5">
-        <i class="fa-solid fa-folder-open text-blue-400"></i> [5] 규정집 & 도면 허브
+      <button onclick="openModal('manufacturingModal')" class="whitespace-nowrap px-3 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 hover:border-blue-400 hover:text-blue-400 transition flex items-center gap-1.5">
+        <i class="fa-solid fa-screwdriver-wrench text-blue-400"></i> [5] 제작 (10단계 공정 & BOM)
       </button>
     </div>
   </div>
 
-  <!-- MAIN GARAGE FLOOR (Interactive Paddock Stage) -->
+  <!-- MAIN GARAGE FLOOR -->
   <main class="relative z-10 max-w-7xl mx-auto px-4 py-6 md:py-10">
     
-    <!-- Paddock Atmosphere Container -->
     <div class="relative rounded-3xl bg-slate-950/70 border border-slate-800/90 shadow-2xl p-4 sm:p-8 bg-garage-grid overflow-hidden">
       
       <!-- Ambient Lighting Overhead Lamp Effect -->
@@ -212,25 +190,25 @@
       <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-3">
         <div>
           <span class="text-xs font-mono uppercase tracking-widest text-cyan-400 font-bold flex items-center gap-2">
-            <i class="fa-solid fa-warehouse"></i> Pit Bay #07 &bull; 영암/태백 서킷 트랙사이드 캠프
+            <i class="fa-solid fa-warehouse"></i> Hannam Univ. Engineering Garage &bull; Master Bible v13.0
           </span>
           <h2 class="text-2xl sm:text-3xl font-tech font-bold text-white tracking-wide mt-1">
-            2027 EV-07 "BLUE THUNDER" WORKSHOP
+            2027 TEAM_DYNAMICS "58VDY27" WORKSTATION
           </h2>
         </div>
-        <div class="flex items-center gap-3 font-mono text-xs text-slate-400 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
-          <div><span class="text-slate-500">배터리 SOC:</span> <span class="text-emerald-400 font-bold">94%</span></div>
+        <div class="flex flex-wrap items-center gap-3 font-mono text-xs text-slate-400 bg-slate-900/80 px-4 py-2 rounded-xl border border-slate-800">
+          <div><span class="text-slate-500">배터리팩:</span> <span class="text-emerald-400 font-bold">57.4V / 58.5Ah</span></div>
           <div class="w-px h-3 bg-slate-700"></div>
-          <div><span class="text-slate-500">차량 무게:</span> <span class="text-cyan-400 font-bold">198kg</span></div>
+          <div><span class="text-slate-500">공차 중량:</span> <span class="text-cyan-400 font-bold">163.0kg</span></div>
           <div class="w-px h-3 bg-slate-700"></div>
-          <div><span class="text-slate-500">모터 상태:</span> <span class="text-amber-400 font-bold">STANDBY</span></div>
+          <div><span class="text-slate-500">0→70m 가속:</span> <span class="text-amber-400 font-bold">5.68초</span></div>
         </div>
       </div>
 
       <!-- INTERACTIVE MAP ZONES (5 Key Locations in Garage) -->
       <div class="grid grid-cols-1 md:grid-cols-12 gap-6 mt-8 relative">
 
-        <!-- ZONE 1: CENTER LIFT - 2027 EV MACHINE (Span 8 on desktop) -->
+        <!-- ZONE 1: CENTER LIFT - 2027 EV MACHINE (Span 8) -->
         <div class="md:col-span-8 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-cyan-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer overflow-hidden neon-glow-cyan" onclick="openModal('vehicleModal')">
           <div class="absolute top-4 right-4 z-10">
             <span class="hotspot-ring relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500/20 text-cyan-400 border border-cyan-400 text-xs font-mono font-bold">
@@ -243,59 +221,46 @@
               <i class="fa-solid fa-bolt"></i> 중앙 리프트 베이 (Center Lift Area)
             </div>
             <h3 class="text-xl font-tech font-bold text-white group-hover:text-cyan-300 transition mt-1">
-              2027 시즌 EV 머신 [E-Volt 27]
+              2027 시즌 초경량 포뮬러 머신 [58VDY27]
             </h3>
-            <p class="text-xs text-slate-400 mt-1 max-w-md">
-              70kW 고출력 영구자석 모터, 300V 맞춤형 배터리팩, 탄소섬유 에어로 패키지가 장착된 메인 레이스카입니다.
+            <p class="text-xs text-slate-400 mt-1 max-w-xl">
+              공차 163.0kg(배분 46:54), 축거 1,505mm, QS-165 V2 듀얼모터(10kW 정전력 제어), Molicel P45B 58V 탭리스 배터리팩(17.5kg) 및 무윙 벤투리 디퓨저(다운포스 185.2N)가 집약된 레이스카입니다.
             </p>
           </div>
 
           <!-- Interactive Race Car Silhouette & Graphic -->
-          <div class="relative my-4 py-8 flex items-center justify-center">
-            <!-- Lift Platform Graphic -->
+          <div class="relative my-4 py-6 flex items-center justify-center">
             <div class="absolute bottom-2 w-4/5 h-4 bg-slate-800/90 border-t-2 border-cyan-500/50 rounded-sm transform skew-x-12"></div>
             
-            <!-- Stylized EV Racecar SVG -->
             <div class="relative w-full max-w-lg transform group-hover:scale-105 transition-transform duration-500">
               <svg viewBox="0 0 600 240" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-auto drop-shadow-[0_15px_20px_rgba(0,240,255,0.2)]">
-                <!-- Shadow -->
                 <ellipse cx="300" cy="210" rx="260" ry="18" fill="#000" fill-opacity="0.6"/>
-                <!-- Wheels Front & Rear -->
                 <circle cx="130" cy="180" r="42" fill="#1e2430" stroke="#00f0ff" stroke-width="4"/>
-                <circle cx="130" cy="180" r="22" fill="#090d16" stroke="#475569" stroke-width="3"/>
+                <circle cx="130" cy="180" r="22" fill="#090d16" stroke="#d4af37" stroke-width="3"/>
                 <circle cx="470" cy="180" r="44" fill="#1e2430" stroke="#00f0ff" stroke-width="4"/>
-                <circle cx="470" cy="180" r="24" fill="#090d16" stroke="#475569" stroke-width="3"/>
-                <!-- Formula Aerodynamic Body Shell -->
-                <path d="M50 180 L90 170 L140 170 L180 135 L260 130 L320 85 L410 80 L490 120 L550 125 L560 170 L520 185 L420 185 L390 165 L210 165 L180 185 Z" fill="#111827" stroke="#38bdf8" stroke-width="3.5"/>
-                <!-- Cockpit Halo & Safety Hoop -->
-                <path d="M290 85 L310 50 L350 50 L370 82" stroke="#f43f5e" stroke-width="5" stroke-linecap="round"/>
-                <!-- Front Wing & Nosecone -->
-                <path d="M40 185 L100 185 L85 160 L40 170 Z" fill="#0284c7"/>
-                <line x1="50" y1="185" x2="20" y2="175" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
-                <!-- High Voltage Battery Pack Glow (Chassis Center) -->
-                <rect x="220" y="135" width="130" height="28" rx="4" fill="#00f0ff" fill-opacity="0.2" stroke="#00f0ff" stroke-width="1.5" stroke-dasharray="4 2" class="animate-pulse"/>
-                <text x="235" y="153" fill="#00f0ff" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="bold">300V ACCUMULATOR</text>
-                <!-- Rear Wing -->
-                <path d="M510 115 L525 55 L575 55 L560 120 Z" fill="#0f172a" stroke="#00f0ff" stroke-width="2.5"/>
-                <line x1="515" y1="60" x2="585" y2="60" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
-                <!-- Neon Underglow -->
+                <circle cx="470" cy="180" r="24" fill="#090d16" stroke="#d4af37" stroke-width="3"/>
+                <path d="M45 180 L95 160 L150 155 L200 130 L270 125 L330 85 L410 85 L490 125 L545 140 L555 175 L515 185 L420 185 L390 170 L210 170 L180 185 Z" fill="#0f172a" stroke="#38bdf8" stroke-width="3.5"/>
+                <path d="M295 85 L315 45 L350 45 L370 85" stroke="#94a3b8" stroke-width="5" stroke-linecap="round"/>
+                <path d="M40 182 L105 182 L95 158 L45 170 Z" fill="#1e293b" stroke="#00f0ff" stroke-width="1.5"/>
+                <rect x="335" y="132" width="95" height="32" rx="4" fill="#ff6b00" fill-opacity="0.25" stroke="#ff6b00" stroke-width="1.5" stroke-dasharray="4 2" class="animate-pulse"/>
+                <text x="342" y="152" fill="#ff6b00" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="bold">58V P45B 14S13P</text>
+                <text x="195" y="155" fill="#38bdf8" font-family="'Chakra Petch', sans-serif" font-size="13" font-weight="bold">HANNAM #58</text>
                 <line x1="160" y1="190" x2="440" y2="190" stroke="#00f0ff" stroke-width="6" stroke-linecap="round" opacity="0.8" filter="blur(3px)"/>
               </svg>
             </div>
           </div>
 
-          <!-- Bottom Card Action Tag -->
           <div class="relative z-10 flex items-center justify-between border-t border-slate-800/80 pt-4 text-xs font-mono">
             <span class="text-cyan-400 group-hover:underline flex items-center gap-1">
-              <i class="fa-solid fa-cube"></i> 클릭하여 360° 제원 및 턴테이블 스펙카드 열기 &rarr;
+              <i class="fa-solid fa-cube"></i> 클릭하여 5대 구역 패키징 및 서스펜션 하드포인트 열기 &rarr;
             </span>
             <span class="bg-cyan-500/10 text-cyan-300 px-2 py-1 rounded border border-cyan-500/30">
-              클릭 시 검차 모드 활성화
+              163.0kg &bull; Z_CG 215mm
             </span>
           </div>
         </div>
 
-        <!-- ZONE 2: WHITEBOARD - STRATEGY & MILESTONES (Span 4) -->
+        <!-- ZONE 2: WHITEBOARD - EDITABLE TEAM R&R & MILESTONES (Span 4) -->
         <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-amber-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer neon-glow-orange" onclick="openModal('strategyModal')">
           <div class="absolute top-4 right-4 z-10">
             <span class="hotspot-ring relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 border border-amber-400 text-xs font-mono font-bold">
@@ -308,33 +273,37 @@
               <i class="fa-solid fa-chalkboard-user"></i> 작전 화이트보드 (Pit Board)
             </div>
             <h3 class="text-xl font-tech font-bold text-white group-hover:text-amber-300 transition mt-1">
-              마일스톤 & 전략 회의판
+              부서별 조직도 & 마일스톤
             </h3>
             <p class="text-xs text-slate-400 mt-1">
-              대회 출전 타임라인, 파트별(섀시·전장·배터리) 담당 팀원 및 현재 진행 단계.
+              클릭하여 파트별 부서장·부서원 명단을 직접 수정하고 6개월 제작 로드맵을 관리하세요.
             </p>
 
-            <!-- Mini Sticky Notes Mockup -->
-            <div class="mt-4 space-y-2">
+            <div class="mt-4 space-y-2.5">
               <div class="p-2.5 rounded-lg bg-amber-500/10 border-l-4 border-amber-400 text-xs font-mono text-slate-200">
-                <span class="text-amber-300 font-bold block mb-0.5">📌 현재 집중 마일스톤</span>
-                BMS 통신 캔버스 패킷 검증 및 섀시 용접 검사
+                <span class="text-amber-300 font-bold block mb-0.5">📌 현행 마스터 버전 (v13.0)</span>
+                STM32F7 100Hz DYC / 500Hz 슬립율 제어 & 전 시스템 설계 동결
               </div>
               <div class="p-2.5 rounded-lg bg-slate-800/80 border-l-4 border-cyan-400 text-xs font-mono text-slate-300">
-                <span class="text-cyan-300 font-bold block mb-0.5">👥 파트 리더</span>
-                전장: 김태호 / 섀시: 이지훈 / 파워트레인: 박서연
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-cyan-300 font-bold">👥 파트별 부서장 현황</span>
+                  <span class="text-[10px] bg-cyan-500/20 text-cyan-300 px-1.5 py-0.5 rounded">직접 수정 가능</span>
+                </div>
+                <div id="mainBoardLeaderSummary" class="text-[11px] text-slate-300 space-y-0.5 leading-relaxed">
+                  <!-- JS로 동적 렌더링 -->
+                </div>
               </div>
             </div>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs font-mono text-amber-400 flex items-center justify-between">
-            <span>마일스톤 전체 로드맵 보기</span>
-            <i class="fa-solid fa-arrow-right"></i>
+            <span>부서장 및 부서원 명단 편집하기</span>
+            <i class="fa-solid fa-pen-to-square"></i>
           </div>
         </div>
 
-        <!-- ZONE 3: TELEMETRY DESK & LAPTOP (Span 4) -->
-        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-emerald-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer neon-glow-green" onclick="openModal('telemetryModal')">
+        <!-- ZONE 3 (하단 왼쪽 첫 번째 탭): 해석 (CAE / ANSYS / CFD / DFMEA) -->
+        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-emerald-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer neon-glow-green" onclick="openModal('analysisModal')">
           <div class="absolute top-4 right-4 z-10">
             <span class="hotspot-ring relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-400 text-xs font-mono font-bold">
               03
@@ -343,33 +312,43 @@
 
           <div>
             <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 uppercase tracking-wider">
-              <i class="fa-solid fa-laptop-code"></i> 엔지니어링 데스크
+              <i class="fa-solid fa-cubes-stacked"></i> CAE & Simulation Lab
             </div>
-            <h3 class="text-xl font-tech font-bold text-white group-hover:text-emerald-300 transition mt-1">
-              실시간 텔레메트리 랩탑
+            <h3 class="text-2xl font-tech font-bold text-white group-hover:text-emerald-300 transition mt-1">
+              해석 <span class="text-sm font-normal text-slate-400 font-mono">(구조·열·CFD·DFMEA)</span>
             </h3>
             <p class="text-xs text-slate-400 mt-1">
-              모터 RPM, 인버터 온도, 배터리 셀 밸런싱 실시간 시뮬레이션 파형 모니터링.
+              ANSYS Workbench 기반 전방 IA 충돌, 프레임 비틀림 강성, 위상최적화 부품, 제동 열-구조 및 에어로 CFD 해석 데이터.
             </p>
 
-            <!-- Visual Simulated Oscilloscope Widget -->
-            <div class="mt-4 p-3 bg-black/60 rounded-xl border border-slate-800 relative overflow-hidden">
-              <div class="flex justify-between items-center text-[10px] font-mono text-emerald-400 mb-1">
-                <span>CAN-BUS DATA STREAM</span>
-                <span class="animate-pulse">● 50Hz LIVE</span>
+            <div class="mt-4 grid grid-cols-2 gap-2 text-[11px] font-mono">
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block">비틀림 강성</span>
+                <span class="text-emerald-400 font-bold">5,641 N·m/deg</span>
               </div>
-              <canvas id="miniTelemetryWave" class="w-full h-16"></canvas>
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block">IA 흡수 에너지</span>
+                <span class="text-cyan-400 font-bold">7,410 J (17.6g)</span>
+              </div>
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block">벤투리 다운포스</span>
+                <span class="text-amber-400 font-bold">185.2 N (60km/h)</span>
+              </div>
+              <div class="p-2.5 bg-slate-900/90 rounded-lg border border-slate-800">
+                <span class="text-slate-500 block">시스템 DFMEA</span>
+                <span class="text-purple-400 font-bold">전 항목 RPN ≤ 36</span>
+              </div>
             </div>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs font-mono text-emerald-400 flex items-center justify-between">
-            <span>데이터 모니터 및 주행 로그 열기</span>
-            <i class="fa-solid fa-chart-line"></i>
+            <span>전 영역 상세 해석 매뉴얼 열기</span>
+            <i class="fa-solid fa-chart-area"></i>
           </div>
         </div>
 
-        <!-- ZONE 4: TOOL CHEST & SCRUTINEERING CHECKLIST (Span 4) -->
-        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-rose-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer" onclick="openModal('toolsModal')">
+        <!-- ZONE 4 (하단 중앙 두 번째 탭): 배선 (HV/LV Harness, BSPD Pinout, STM32 Firmware) -->
+        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-rose-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer" onclick="openModal('wiringModal')">
           <div class="absolute top-4 right-4 z-10">
             <span class="hotspot-ring relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-rose-500/20 text-rose-400 border border-rose-400 text-xs font-mono font-bold">
               04
@@ -378,34 +357,39 @@
 
           <div>
             <div class="flex items-center gap-2 text-xs font-mono text-rose-400 uppercase tracking-wider">
-              <i class="fa-solid fa-toolbox"></i> 공구함 & 정비 랙
+              <i class="fa-solid fa-network-wired"></i> HV/LV Electrical & Firmware
             </div>
-            <h3 class="text-xl font-tech font-bold text-white group-hover:text-rose-300 transition mt-1">
-              규정 검차 체크리스트
+            <h3 class="text-2xl font-tech font-bold text-white group-hover:text-rose-300 transition mt-1">
+              배선 <span class="text-sm font-normal text-slate-400 font-mono">(하네스·BSPD·펌웨어)</span>
             </h3>
             <p class="text-xs text-slate-400 mt-1">
-              KSAE 공식 전기 안전 검차(TSAL, 비상차단, IMD 절연저항 500Ω/V 등) 항목 현황판.
+              전체 하네스 From-To 결선표, 아날로그 BSPD IC 핀맵(LM2901/CD4043B), STP 차폐 CAN-FD 및 STM32F7 제어 코드팩.
             </p>
 
-            <div class="mt-4 p-3 bg-slate-900/70 rounded-xl border border-slate-800 text-xs font-mono">
-              <div class="flex justify-between mb-1.5">
-                <span class="text-slate-400">검차 준비 진행률</span>
-                <span class="text-rose-400 font-bold" id="checklistProgressText">83% (5/6)</span>
+            <div class="mt-4 space-y-1.5 font-mono text-[11px]">
+              <div class="p-2 rounded bg-rose-500/10 border border-rose-500/30 flex justify-between">
+                <span class="text-rose-300">1. HV 주동력선</span>
+                <span class="text-slate-300">AWG 2 (35sq) / 200A 퓨즈</span>
               </div>
-              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div id="checklistProgressBar" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-500" style="width: 83%;"></div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span class="text-cyan-300">2. CAN-FD 버스</span>
+                <span class="text-slate-300">AWG 22 STP / 60Ω+60Ω 분할종단</span>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span class="text-amber-300">3. 아날로그 BSPD</span>
+                <span class="text-slate-300">&gt;87A &amp; &gt;30bar 500ms 래치</span>
               </div>
             </div>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs font-mono text-rose-400 flex items-center justify-between">
-            <span>체크리스트 열고 항목 토글하기</span>
-            <i class="fa-solid fa-list-check"></i>
+            <span>결선표·핀맵 및 C 펌웨어 열기</span>
+            <i class="fa-solid fa-bolt-lightning"></i>
           </div>
         </div>
 
-        <!-- ZONE 5: BLUEPRINT CABINET & RESOURCE HUB (Span 4) -->
-        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-blue-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer" onclick="openModal('cabinetModal')">
+        <!-- ZONE 5 (하단 오른쪽 세 번째 탭): 제작 (10-Step Build, DFM, Race Setup, 33-Item BOM) -->
+        <div class="md:col-span-4 group relative rounded-2xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800 hover:border-blue-400/80 transition-all duration-300 p-6 flex flex-col justify-between cursor-pointer" onclick="openModal('manufacturingModal')">
           <div class="absolute top-4 right-4 z-10">
             <span class="hotspot-ring relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 border border-blue-400 text-xs font-mono font-bold">
               05
@@ -414,28 +398,33 @@
 
           <div>
             <div class="flex items-center gap-2 text-xs font-mono text-blue-400 uppercase tracking-wider">
-              <i class="fa-solid fa-folder-closed"></i> 도면 & 문서 캐비닛
+              <i class="fa-solid fa-screwdriver-wrench"></i> Build Sequence & Cost BOM
             </div>
-            <h3 class="text-xl font-tech font-bold text-white group-hover:text-blue-300 transition mt-1">
-              규정집 & 팀 클라우드 링크
+            <h3 class="text-2xl font-tech font-bold text-white group-hover:text-blue-300 transition mt-1">
+              제작 <span class="text-sm font-normal text-slate-400 font-mono">(10단계 조립·셋업·견적)</span>
             </h3>
             <p class="text-xs text-slate-400 mt-1">
-              KSAE 공식 대회 규정집, 전기 시스템 양식(ESF), FMEA 보고서 및 3D CAD 드라이브.
+              조립 역전 방지 10단계 제작 순서, 동아리 실현가능성(DFM) 플랜 B, 3대 종목 트랙 셋업 및 33개 품목 상세 견적서(1,485만원).
             </p>
 
-            <div class="mt-4 flex flex-wrap gap-2 text-xs font-mono">
-              <span class="px-2.5 py-1 rounded bg-blue-500/10 text-blue-300 border border-blue-500/20">
-                📁 2027_KSAE_Rules.pdf
-              </span>
-              <span class="px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                📂 Google Drive (CAD)
-              </span>
+            <div class="mt-4 p-3 bg-slate-900/80 rounded-xl border border-slate-800 text-xs font-mono">
+              <div class="flex justify-between mb-1.5">
+                <span class="text-slate-400">10단계 실차 제작 공정률</span>
+                <span class="text-blue-400 font-bold" id="buildProgressText">20% (2/10)</span>
+              </div>
+              <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                <div id="buildProgressBar" class="h-full bg-gradient-to-r from-blue-500 to-cyan-400 rounded-full transition-all duration-500" style="width: 20%;"></div>
+              </div>
+              <div class="flex justify-between text-[11px] text-slate-400 mt-2 pt-2 border-t border-slate-800">
+                <span>총 제작 예산(33품목):</span>
+                <span class="text-emerald-400 font-bold">14,850,000원</span>
+              </div>
             </div>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs font-mono text-blue-400 flex items-center justify-between">
-            <span>문서 및 외부 리소스 바로가기</span>
-            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            <span>제작 순서·셋업 시트·견적서 열기</span>
+            <i class="fa-solid fa-list-ol"></i>
           </div>
         </div>
 
@@ -444,31 +433,28 @@
     </div>
   </main>
 
-  <!-- ==================== MODAL 1: EV RACECAR SPECROOM (중앙 리프트) ==================== -->
+  <!-- ==================== MODAL 1: 58VDY27 MACHINE SPEC & PACKAGING ==================== -->
   <div id="vehicleModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
-    <div class="bg-slate-900 border border-cyan-500/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+    <div class="bg-slate-900 border border-cyan-500/50 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
       
-      <!-- Modal Header -->
       <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
         <div>
-          <span class="text-xs font-mono text-cyan-400 font-semibold">[PADDOCK ZONE 01] VEHICLE SPECIFICATION</span>
-          <h3 class="text-2xl font-tech font-bold text-white">2027 시즌 포뮬러 머신 (E-Volt 27)</h3>
+          <span class="text-xs font-mono text-cyan-400 font-semibold">[ZONE 01] 2027 TEAM_DYNAMICS MASTER ARCHITECTURE</span>
+          <h3 class="text-2xl font-tech font-bold text-white">58VDY27 5대 구역 패키징 & 3D 서스펜션 하드포인트</h3>
         </div>
         <button onclick="closeModal('vehicleModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <!-- Modal Body -->
       <div class="p-6 space-y-6">
         
-        <!-- Interactive 3D Turntable Simulator Container -->
+        <!-- 360 Turntable Simulator -->
         <div class="rounded-xl bg-slate-950 p-6 border border-slate-800 text-center relative overflow-hidden">
           <div class="absolute top-3 left-4 text-xs font-mono text-slate-400">
-            <i class="fa-solid fa-arrows-rotate text-cyan-400 animate-spin"></i> 360° 제원 분석 턴테이블
+            <i class="fa-solid fa-arrows-rotate text-cyan-400 animate-spin"></i> 360° 제원 분석 턴테이블 (58VDY27)
           </div>
-          <div class="py-6 flex flex-col items-center justify-center">
-            <!-- Simulated Turning Vehicle Wireframe -->
+          <div class="py-4 flex flex-col items-center justify-center">
             <div id="turntableCar" class="transition-transform duration-300 w-full max-w-sm">
               <svg viewBox="0 0 400 160" fill="none" class="w-full h-auto">
                 <rect x="50" y="70" width="300" height="40" rx="8" fill="#1e293b" stroke="#00f0ff" stroke-width="2"/>
@@ -479,9 +465,7 @@
                 <line x1="140" y1="90" x2="260" y2="90" stroke="#39ff14" stroke-width="4" stroke-dasharray="6 3"/>
               </svg>
             </div>
-
-            <!-- Turntable Slider Controls -->
-            <div class="w-full max-w-xs mt-4">
+            <div class="w-full max-w-xs mt-3">
               <input type="range" id="carAngleSlider" min="0" max="360" value="0" oninput="rotateCar(this.value)" class="w-full accent-cyan-400 cursor-pointer">
               <div class="flex justify-between text-[11px] font-mono text-slate-400 mt-1">
                 <span>0° 정면</span>
@@ -492,37 +476,121 @@
           </div>
         </div>
 
-        <!-- Specifications Grid -->
+        <!-- Key Spec Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">트랙션 모터 (Motor)</span>
-            <span class="text-lg font-tech font-bold text-cyan-400">70 kW PMSM</span>
-            <p class="text-xs text-slate-300 mt-1">수냉식 동기모터, 최대 토크 185 Nm, 감속비 3.8:1 체인 드라이브</p>
+            <span class="text-xs font-mono text-slate-400 block">공차중량 & 무게배분</span>
+            <span class="text-lg font-tech font-bold text-cyan-400">163.0 kg (46 : 54)</span>
+            <p class="text-xs text-slate-300 mt-1">운전자(75kg) 탑승 총중량 238.0kg, 등가 회전 질량(m_eq) 8.4kg (-54.3% 감량)</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">어큐뮬레이터 (배터리팩)</span>
-            <span class="text-lg font-tech font-bold text-amber-400">300V / 6.8 kWh</span>
-            <p class="text-xs text-slate-300 mt-1">Samsung 21700 84S2P 구성, 전동 마스터 릴레이(AIR) 듀얼 탑재</p>
+            <span class="text-xs font-mono text-slate-400 block">3D 무게중심 & 틸트 한계</span>
+            <span class="text-lg font-tech font-bold text-amber-400">Z_CG 215mm / 66.27°</span>
+            <p class="text-xs text-slate-300 mt-1">X_CG=+812.7mm, 탑승 Z_CG=246.2mm, 60° 틸트 테이블 안전율 SF=1.31</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">섀시 & 공차 중량</span>
-            <span class="text-lg font-tech font-bold text-emerald-400">198 kg (무게배분 48:52)</span>
-            <p class="text-xs text-slate-300 mt-1">크로몰리 4130 파이프 스페이스 프레임 + 카본 노즈콘</p>
+            <span class="text-xs font-mono text-slate-400 block">듀얼모터 & 구동 효율</span>
+            <span class="text-lg font-tech font-bold text-emerald-400">QS-165 V2 × 2 (97.2%)</span>
+            <p class="text-xs text-slate-300 mt-1">ND72530 인버터(라인 82A×2, 상전류 340A), 14T:54T/52T 퀵체인지 스프로킷</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">최고속도 / 가속력 (0-100)</span>
-            <span class="text-lg font-tech font-bold text-purple-400">125 km/h &bull; 3.6초</span>
-            <p class="text-xs text-slate-300 mt-1">슬라럼 및 가속(Acceleration) 코스 최적화 기어비 매핑</p>
+            <span class="text-xs font-mono text-slate-400 block">58V 탭리스 배터리팩</span>
+            <span class="text-lg font-tech font-bold text-purple-400">Molicel P45B 14S13P</span>
+            <p class="text-xs text-slate-300 mt-1">57.4V 58.5Ah (총중량 17.5kg), 164A 피크 방전 시 전압 강하 1.8V 이내</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">안전 및 절연 모니터</span>
-            <span class="text-lg font-tech font-bold text-rose-400">Bender IMD 탑재</span>
-            <p class="text-xs text-slate-300 mt-1">KSAE 전기차 규정 준수 (500 Ω/V 절연 감시 및 즉각 셧다운)</p>
+            <span class="text-xs font-mono text-slate-400 block">축거 & 최소 회전반경</span>
+            <span class="text-lg font-tech font-bold text-rose-400">1,505 mm / R 3.01 m</span>
+            <p class="text-xs text-slate-300 mt-1">내륜 최대 조향각 30.0°, 프로 애커먼 38%, 안티다이브 20%·안티스쿼트 25%</p>
           </div>
           <div class="p-4 rounded-xl bg-slate-800/50 border border-slate-700/60">
-            <span class="text-xs font-mono text-slate-400 block">타이어 & 서스펜션</span>
-            <span class="text-lg font-tech font-bold text-blue-400">Hoosier 18.0 x 7.5-10</span>
-            <p class="text-xs text-slate-300 mt-1">더블 위시본, 푸시로드 방식 Ohlins TTX25 댐퍼</p>
+            <span class="text-xs font-mono text-slate-400 block">70m 가속 & 비상탈출</span>
+            <span class="text-lg font-tech font-bold text-blue-400">5.68 초 / 3.1 초 탈출</span>
+            <p class="text-xs text-slate-300 mt-1">STM32F7 100Hz DYC·500Hz 슬립율(0.11) 제어, 53° 리클라이닝 카본 시트</p>
+          </div>
+        </div>
+
+        <!-- 5 Zones Packaging Table (Sec 1) -->
+        <div>
+          <h4 class="text-sm font-mono text-cyan-400 uppercase tracking-wider mb-2">■ Inside-Out 5대 구역 패키징 제원표 (Sec 1)</h4>
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="py-2.5 px-3">구역 (Zone)</th>
+                  <th class="py-2.5 px-3">X축 범위(mm)</th>
+                  <th class="py-2.5 px-3">Y축 폭(mm)</th>
+                  <th class="py-2.5 px-3">Z축 높이(mm)</th>
+                  <th class="py-2.5 px-3">핵심 엔지니어링 사양 및 규정 대응 치수</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60 text-slate-300 bg-slate-900/40">
+                <tr>
+                  <td class="py-2.5 px-3 font-bold text-cyan-300">Zone 1: 초경량 충돌부</td>
+                  <td class="py-2.5 px-3">-370 ~ -170</td>
+                  <td class="py-2.5 px-3">200 (외폭)</td>
+                  <td class="py-2.5 px-3">+85 ~ +285</td>
+                  <td class="py-2.5 px-3">Al 5052 허니컴 IA(210×110×205mm, 0.85kg) + 4.0t Al 7075-T6 AIP 격벽, M10(10.9등급) 중공 볼트 4점 체결</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-bold text-cyan-300">Zone 2: 페달·조향부</td>
+                  <td class="py-2.5 px-3">-170 ~ +310</td>
+                  <td class="py-2.5 px-3">360 ~ 490</td>
+                  <td class="py-2.5 px-3">+65 ~ +605</td>
+                  <td class="py-2.5 px-3">2,000N Al 7075 페달박스(암 285g) & 듀얼 MC(전 Ø15.88/후 Ø17.78, 밸런스바 58:42), 역구배 이중 홀 APPS, 후치 조향 랙(내륜 30°), FRH(X=+310, STKM13C Ø25.4×2.0t)</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-bold text-cyan-300">Zone 3: 운전석(Cell)</td>
+                  <td class="py-2.5 px-3">+310 ~ +1,110</td>
+                  <td class="py-2.5 px-3">490 ~ 620</td>
+                  <td class="py-2.5 px-3">+65 ~ +1,120</td>
+                  <td class="py-2.5 px-3">95% 인체공학 카본-노멕스 시트(1.65kg, 등받이 53°) & 풀-플랫 언더트레이(최저지상고 Z=+65mm), Ø250 카본 퀵릴리즈 스티어링(2.4" OLED), MRH(Z=+1,120mm, 헬멧마진 85mm), 이중 방화벽</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-bold text-cyan-300">Zone 4: 배터리·전장</td>
+                  <td class="py-2.5 px-3">+1,110 ~ +1,415</td>
+                  <td class="py-2.5 px-3">620 ~ 550</td>
+                  <td class="py-2.5 px-3">+65 ~ +530</td>
+                  <td class="py-2.5 px-3">58V Molicel P45B 탭리스 팩(14S13P, 17.5kg), 아날로그 BSPD+IMD/AMS 3중 래치 PCB, STM32F767ZI VCU(100Hz DYC/500Hz 슬립율), 좌·우 사이드포드 NACA 냉각 덕트</td>
+                </tr>
+                <tr>
+                  <td class="py-2.5 px-3 font-bold text-cyan-300">Zone 5: 듀얼모터·구동</td>
+                  <td class="py-2.5 px-3">+1,345 ~ +1,810</td>
+                  <td class="py-2.5 px-3">550 ~ 440</td>
+                  <td class="py-2.5 px-3">+65 ~ +490</td>
+                  <td class="py-2.5 px-3">후륜 차축 X=+1,505mm, QS-165 V2 듀얼모터, 14T:54T/52T 스플릿 스프로킷(420g) + 무오링 #420 체인 + SAE 4340 스캘럽 구동컵(580g) & 중공 반축(Ø22×Ø12.5), 리어 벤투리 디퓨저(9.5°)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Suspension Hardpoints Table (Sec 2) -->
+        <div>
+          <h4 class="text-sm font-mono text-cyan-400 uppercase tracking-wider mb-2">■ SolidWorks 3D 서스펜션 하드포인트 좌표표 (Sec 2)</h4>
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <tr>
+                  <th class="py-2 px-3">하드포인트 명칭 (Node)</th>
+                  <th class="py-2 px-3">X (전후, mm)</th>
+                  <th class="py-2 px-3">Y (좌우, mm)</th>
+                  <th class="py-2 px-3">Z (상하, mm)</th>
+                  <th class="py-2 px-3">기구학적 역산 근거 및 성능 효과</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60 text-slate-300 bg-slate-900/40">
+                <tr><td class="py-2 px-3">전륜 휠센터 (Wheel Center_F)</td><td class="py-2 px-3">0.0</td><td class="py-2 px-3">±560.0</td><td class="py-2 px-3">+222.0</td><td class="py-2 px-3">전륜 윤거 1,120mm, 타이어 동하중 반경 r_eff = 222.0mm</td></tr>
+                <tr><td class="py-2 px-3">전륜 어퍼암 아웃보드 (FU_O)</td><td class="py-2 px-3">-9.7</td><td class="py-2 px-3">±465.7</td><td class="py-2 px-3">+335.0</td><td class="py-2 px-3">KPI 15.0° (ΔY=56.3mm) & 캐스터 4.0° (ΔX=14.7mm) 일치</td></tr>
+                <tr><td class="py-2 px-3">전륜 로어암 아웃보드 (FD_O)</td><td class="py-2 px-3">+5.0</td><td class="py-2 px-3">±522.0</td><td class="py-2 px-3">+125.0</td><td class="py-2 px-3">킹핀축 지면 교차점 Y=±555.43mm → 스크럽 반경 4.57mm</td></tr>
+                <tr><td class="py-2 px-3">전륜 어퍼암 인보드 전/후 (FU_F/R)</td><td class="py-2 px-3">-130.0 / +130.0</td><td class="py-2 px-3">±235.0</td><td class="py-2 px-3">+316.0 / +305.0</td><td class="py-2 px-3">전방 +11mm 상향 경사: 급제동 노즈다이브 억제 안티다이브 20%</td></tr>
+                <tr><td class="py-2 px-3">전륜 로어암 인보드 전/후 (FD_F/R)</td><td class="py-2 px-3">-150.0 / +110.0</td><td class="py-2 px-3">±195.0</td><td class="py-2 px-3">+134.6 / +134.6</td><td class="py-2 px-3">전륜 롤센터 60.0mm 형성, 인보드 폭 축소로 내륜 조향각 30.0° 확보</td></tr>
+                <tr><td class="py-2 px-3">조향 랙 인보드 / 타이로드 아웃보드</td><td class="py-2 px-3">+72.0 / +82.0</td><td class="py-2 px-3">±178.0 / ±475.0</td><td class="py-2 px-3">+225.0 / +238.0</td><td class="py-2 px-3">범프스티어 제로화 및 프로 애커먼 38% (최소 회전반경 3.01m)</td></tr>
+                <tr><td class="py-2 px-3">후륜 휠센터 (Wheel Center_R)</td><td class="py-2 px-3">+1,505.0</td><td class="py-2 px-3">±570.0</td><td class="py-2 px-3">+222.0</td><td class="py-2 px-3">축거 1,505mm (-45mm 단축), 후륜 윤거 1,140mm</td></tr>
+                <tr><td class="py-2 px-3">후륜 어퍼암/로어암 아웃보드</td><td class="py-2 px-3">+1,495 / +1,505</td><td class="py-2 px-3">±505.0 / ±520.0</td><td class="py-2 px-3">+345.0 / +125.0</td><td class="py-2 px-3">Al 7075-T651 초경량 너클(640g) 상·하단 볼조인트 결합</td></tr>
+                <tr><td class="py-2 px-3">후륜 로어암 인보드 전/후 (RD_F/R)</td><td class="py-2 px-3">+1,350 / +1,650</td><td class="py-2 px-3">±190.0</td><td class="py-2 px-3">+150.0 / +135.0</td><td class="py-2 px-3">전방 +15mm 상향 경사: 발진 가속 안티스쿼트 25% (동적 후륜하중 161.62kg)</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -537,14 +605,14 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL 2: STRATEGY WHITEBOARD (작전 회의판) ==================== -->
+  <!-- ==================== MODAL 2: STRATEGY WHITEBOARD (사용자 편집 기능 탑재) ==================== -->
   <div id="strategyModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
     <div class="bg-slate-900 border border-amber-500/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
       
       <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
         <div>
-          <span class="text-xs font-mono text-amber-400 font-semibold">[PADDOCK ZONE 02] STRATEGY & MILESTONES</span>
-          <h3 class="text-2xl font-tech font-bold text-white">작전 화이트보드 & 팀원 R&R</h3>
+          <span class="text-xs font-mono text-amber-400 font-semibold">[ZONE 02] INTERACTIVE TEAM ROSTER & ROADMAP</span>
+          <h3 class="text-2xl font-tech font-bold text-white">작전 화이트보드 & 파트별 부서장·부서원 편집기</h3>
         </div>
         <button onclick="closeModal('strategyModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark text-lg"></i>
@@ -553,83 +621,66 @@
 
       <div class="p-6 space-y-6">
 
-        <!-- 2027 Competition Milestones -->
+        <!-- Editable Team Roster Section -->
         <div>
-          <h4 class="text-sm font-mono text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-flag-checkered text-amber-400"></i> 대회 로드맵 타임라인
-          </h4>
-          <div class="space-y-3">
-            <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <span class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/30">✓</span>
-                <div>
-                  <h5 class="text-sm font-semibold text-white">1단계: 패키징 레이아웃 및 3D CAD 확정</h5>
-                  <p class="text-xs text-slate-400">배터리팩 탑재 위치 및 섀시 튜브 지오메트리 완료</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 text-[11px] font-mono rounded bg-emerald-500/20 text-emerald-400">완료</span>
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+            <div>
+              <h4 class="text-sm font-mono text-amber-400 uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-users-gear"></i> 파트별 부서장 및 부서원 편성 (직접 클릭하여 수정)
+              </h4>
+              <p class="text-xs text-slate-400 mt-0.5">부서명, 부서장, 부서원, 담당 업무를 자유롭게 입력한 뒤 우측의 [변경사항 저장] 버튼을 누르면 사이트에 영구 반영됩니다.</p>
             </div>
+            <div class="flex items-center gap-2">
+              <button onclick="addNewDepartment()" class="px-3 py-1.5 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-xs font-mono transition flex items-center gap-1">
+                <i class="fa-solid fa-plus"></i> 파트 추가
+              </button>
+              <button onclick="saveDepartmentsFromInputs()" class="px-3.5 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs font-mono transition flex items-center gap-1 shadow-lg shadow-amber-500/20">
+                <i class="fa-solid fa-floppy-disk"></i> 변경사항 저장
+              </button>
+              <button onclick="resetDepartments()" class="px-2.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white text-xs font-mono transition">
+                초기화
+              </button>
+            </div>
+          </div>
 
-            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between">
-              <div class="flex items-center space-x-3">
-                <span class="w-6 h-6 rounded-full bg-amber-500 text-black flex items-center justify-center text-xs font-bold">2</span>
-                <div>
-                  <h5 class="text-sm font-semibold text-white">2단계: 고전압 배터리팩 제작 및 BMS 연동</h5>
-                  <p class="text-xs text-slate-400">스팟 용접, 84S2P 셀 밸런싱 모듈 및 비상 컷오프 릴레이 결선</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 text-[11px] font-mono rounded bg-amber-500/20 text-amber-400 animate-pulse">진행중 (75%)</span>
-            </div>
-
-            <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-between opacity-80">
-              <div class="flex items-center space-x-3">
-                <span class="w-6 h-6 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold">3</span>
-                <div>
-                  <h5 class="text-sm font-semibold text-white">3단계: 전체 시스템 전장 배선 & 벤치 런(Bench Run)</h5>
-                  <p class="text-xs text-slate-400">인버터 모터 무부하 구동 및 CAN 통신 에러 로그 제로화</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 text-[11px] font-mono rounded bg-slate-700 text-slate-300">D-120 예정</span>
-            </div>
-
-            <div class="p-3 rounded-xl bg-slate-800/40 border border-slate-700 flex items-center justify-between opacity-80">
-              <div class="flex items-center space-x-3">
-                <span class="w-6 h-6 rounded-full bg-slate-700 text-slate-400 flex items-center justify-center text-xs font-bold">4</span>
-                <div>
-                  <h5 class="text-sm font-semibold text-white">4단계: 서킷 트랙 주행 테스트 & 모의 검차 통과</h5>
-                  <p class="text-xs text-slate-400">영암 서킷 200랩 내구성 시험 및 브레이크 4바퀴 락(Lock) 테스트</p>
-                </div>
-              </div>
-              <span class="px-2.5 py-1 text-[11px] font-mono rounded bg-slate-700 text-slate-300">대회 1개월 전</span>
-            </div>
+          <div id="departmentEditorContainer" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <!-- JS로 동적 렌더링 -->
           </div>
         </div>
 
-        <!-- Team Roles & Members (R&R) -->
+        <!-- 6개월 마스터 제작·조립·검증 로드맵 (Sec 12) -->
         <div>
-          <h4 class="text-sm font-mono text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-2">
-            <i class="fa-solid fa-users-gear text-cyan-400"></i> 분과별 팀원 R&R
+          <h4 class="text-sm font-mono text-cyan-400 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-flag-checkered"></i> 6개월 마스터 제작·조립·검증 로드맵 (Sec 12)
           </h4>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
-              <div class="font-bold text-amber-300 font-mono">⚡ 고전압 전장팀 (Powertrain & Battery)</div>
-              <p class="text-slate-300 mt-1">김태호(팀장), 강민수, 정유나</p>
-              <p class="text-slate-400 text-[11px] mt-0.5">담당: 배터리팩 안전 구조, 인버터 캘리브레이션, BMS</p>
+          <div class="space-y-2.5 font-mono text-xs">
+            <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-between">
+              <div>
+                <span class="text-emerald-400 font-bold">[Phase 1: M-6 ~ M-5] 설계 동결 & 핵심 자재 발주</span>
+                <p class="text-slate-300 mt-0.5">3D CAD 간섭 체크 0건 동결, STKM13C 강관 4축 레이저 노칭 발주, Molicel P45B 182셀 입고 및 AC 임피던스(8.5±0.2mΩ) 전수 매칭</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-500/20 text-emerald-400 shrink-0 ml-2">완료</span>
             </div>
-            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
-              <div class="font-bold text-cyan-300 font-mono">🏎️ 섀시 & 바디팀 (Chassis & Aero)</div>
-              <p class="text-slate-300 mt-1">이지훈(부팀장), 박성민, 최현우</p>
-              <p class="text-slate-400 text-[11px] mt-0.5">담당: 크로몰리 프레임 용접, 더블위시본, 브레이크 라인</p>
+            <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/40 flex items-center justify-between">
+              <div>
+                <span class="text-amber-300 font-bold">[Phase 2: M-4 ~ M-3] 지그 용접 & 교내 CNC/VaRTM 가공</span>
+                <p class="text-slate-300 mt-0.5">5.0t 박스 지그 내 대칭 스킵 TIG 용접 및 노드 컬러 침투탐상(PT), 교내 3축 CNC(Al 7075 업라이트·벨크랭크·스프로킷·페달암) 및 VaRTM(CFRP 시트·언더트레이) 제작</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-amber-500/20 text-amber-400 shrink-0 ml-2 animate-pulse">진행중</span>
             </div>
-            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
-              <div class="font-bold text-emerald-300 font-mono">💻 제어 & 텔레메트리 (Embedded & Logic)</div>
-              <p class="text-slate-300 mt-1">박서연, 윤도현</p>
-              <p class="text-slate-400 text-[11px] mt-0.5">담당: VCU 알고리즘, CAN 통신 데이터로거, 대시보드 디스플레이</p>
+            <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-between">
+              <div>
+                <span class="text-cyan-300 font-bold">[Phase 3: M-2] 배터리팩 용접·전장 벤치 검증 & 롤링 섀시</span>
+                <p class="text-slate-300 mt-0.5">Cu-Ni 버스바 레이저 용접, 하드웨어 BSPD·IMD·AMS 3중 래치 벤치 폴트 테스트, 유압 브레이크(DOT 5.1) 에어 빼기 및 롤링 섀시 완성</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-slate-700 text-slate-300 shrink-0 ml-2">예정</span>
             </div>
-            <div class="p-3 rounded-xl bg-slate-800/60 border border-slate-700">
-              <div class="font-bold text-rose-300 font-mono">📋 기획 & 안전검차 (Safety & Finance)</div>
-              <p class="text-slate-300 mt-1">한지민, 송우진</p>
-              <p class="text-slate-400 text-[11px] mt-0.5">담당: KSAE 공식 보고서(ESF) 제출, 부품 조달 및 대회 규정집 감수</p>
+            <div class="p-3 rounded-xl bg-slate-800/50 border border-slate-700 flex items-center justify-between">
+              <div>
+                <span class="text-purple-300 font-bold">[Phase 4: M-1] 교내 4단계 모의 검차 & 100km 셰이크다운</span>
+                <p class="text-slate-300 mt-0.5">60° 틸트·120초 우천·3.1초 탈출·40km/h 4륜 락업 제동 원패스 검증 및 누적 100km 트랙 셰이크다운(전수 토크마킹 점검)</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-slate-700 text-slate-300 shrink-0 ml-2">대회 1개월 전</span>
             </div>
           </div>
         </div>
@@ -645,247 +696,628 @@
     </div>
   </div>
 
-  <!-- ==================== MODAL 3: TELEMETRY & LOGGING (데이터 모니터링) ==================== -->
-  <div id="telemetryModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
-    <div class="bg-slate-900 border border-emerald-500/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+  <!-- ==================== MODAL 3: 해석 (CAE / 구조·열·CFD·DFMEA 통합) ==================== -->
+  <div id="analysisModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+    <div class="bg-slate-900 border border-emerald-500/50 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
       
       <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
         <div>
-          <span class="text-xs font-mono text-emerald-400 font-semibold">[PADDOCK ZONE 03] CAN-BUS TELEMETRY STATION</span>
-          <h3 class="text-2xl font-tech font-bold text-white">실시간 주행 데이터 & 모의 텔레메트리</h3>
+          <span class="text-xs font-mono text-emerald-400 font-semibold">[ZONE 03] ANSYS WORKBENCH & FLUENT CFD SIMULATION</span>
+          <h3 class="text-2xl font-tech font-bold text-white">해석 매뉴얼 (충돌·프레임·현가·구동·열-구조·CFD·DFMEA)</h3>
         </div>
-        <button onclick="closeModal('telemetryModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
+        <button onclick="closeModal('analysisModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div class="p-6 space-y-6">
+      <!-- Sub-tabs inside Analysis Modal -->
+      <div class="px-6 pt-4 border-b border-slate-800 bg-slate-950/60 flex gap-2 overflow-x-auto text-xs font-mono">
+        <button onclick="switchSubTab('analysis', 'ansys-frame', this)" class="analysis-tab-btn px-3.5 py-2 rounded-t-lg bg-emerald-500/20 text-emerald-300 border-b-2 border-emerald-400 font-bold whitespace-nowrap">1. 충돌(IA) & 프레임 강성</button>
+        <button onclick="switchSubTab('analysis', 'ansys-susp', this)" class="analysis-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">2. 현가·구동계 구조/피로</button>
+        <button onclick="switchSubTab('analysis', 'ansys-AeroThermal', this)" class="analysis-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">3. 제동 열-구조 & 에어로 CFD</button>
+        <button onclick="switchSubTab('analysis', 'ansys-dfmea', this)" class="analysis-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">4. 전 시스템 DFMEA & 150점 매핑</button>
+      </div>
 
-        <!-- Realtime Gauges -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
-            <span class="text-[10px] font-mono text-slate-400 uppercase">모터 RPM</span>
-            <div id="gaugeRpm" class="text-2xl sm:text-3xl font-tech font-bold text-emerald-400 my-1">4,250</div>
-            <span class="text-[10px] font-mono text-slate-500">MAX: 6,500 RPM</span>
+      <div class="p-6 space-y-6 text-xs font-mono">
+
+        <!-- Sub-tab 1: IA Crash & Frame SEF (Sec 3, 6) -->
+        <div id="ansys-frame" class="analysis-subpane space-y-6">
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">① 전방 충격완화장치(IA) 충돌 해석 매뉴얼 (규정 제19조 3항 나목 완벽 대응 - Sec 3)</h4>
+            <p class="text-slate-400 mb-3">실차 총중량은 238kg이나, 규정 제19조 법정 고정치인 '총중량 3,000 N (305.81 kg) 가정'을 Point Mass에 엄격히 부여하여 검증했습니다.</p>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-3">설정 단계</th><th class="p-3">ANSYS Workbench 파라미터 입력값</th><th class="p-3">규정 합격 기준 및 검증 결과</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold text-cyan-300">1. 재료 물성</td><td class="p-3">Al 5052 허니컴 등가 직교이방성(압괴 평탄 응력 σ_p = 2.6 MPa) + AIP 격벽(Al 7075-T6 4.0t, σ_y = 503 MPa)</td><td class="p-3 text-emerald-400">일정 압괴 하중(약 56 kN) 유지, IA 단품 0.85kg 달성</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">2. 모델 및 질량</td><td class="p-3">강체벽(Rigid Wall) + 허니컴 IA(210×110×205mm) + AIP(4.0t) + Point Mass 305.81 kg (3,000 N / 9.81 m/s²)</td><td class="p-3 text-emerald-400">총중량 3,000 N 차량 전방 부착 조건 충족</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">3. 초기 속도</td><td class="p-3">Rigid Wall: Fixed Support / IA+AIP+질량 블록에 v_x = 7,000 mm/s (7.0 m/s) 부여</td><td class="p-3 text-emerald-400">초기 운동에너지 E_k = 0.5·m·v² = 7,492.3 J</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">4. 결과 검증</td><td class="p-3">유효 압괴 변형량 δ_crush = 142 mm 시점에서 완전 정지 (Internal Energy = 7,410 J)</td><td class="p-3 text-emerald-400 font-bold">흡수 에너지 7,410 J &gt; 7,350 J (합격)<br>평균 감속도 17.6g ≤ 20g, 피크 24.8g ≤ 40g</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
-            <span class="text-[10px] font-mono text-slate-400 uppercase">배터리 SOC</span>
-            <div id="gaugeSoc" class="text-2xl sm:text-3xl font-tech font-bold text-cyan-400 my-1">94.2 %</div>
-            <span class="text-[10px] font-mono text-slate-500">PACK: 298.4 V</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
-            <span class="text-[10px] font-mono text-slate-400 uppercase">최고 셀 온도</span>
-            <div id="gaugeTemp" class="text-2xl sm:text-3xl font-tech font-bold text-amber-400 my-1">36.5 °C</div>
-            <span class="text-[10px] font-mono text-slate-500">LIMIT: 60.0 °C</span>
-          </div>
-          <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 text-center">
-            <span class="text-[10px] font-mono text-slate-400 uppercase">인버터 전류</span>
-            <div id="gaugeCurrent" class="text-2xl sm:text-3xl font-tech font-bold text-purple-400 my-1">112 A</div>
-            <span class="text-[10px] font-mono text-slate-500">PEAK: 250 A</span>
+
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">② 공간 트러스 프레임 비틀림 강성 및 제42조 SEF 4대 하중 해석 (Sec 6)</h4>
+            <p class="text-slate-400 mb-3">냉간인발 탄소강관 STKM13C(항복강도 σ_y ≥ 380 MPa, 인장강도 σ_u ≥ 510 MPa) 적용, 총 길이 27.8m, 베어 프레임 중량 26.5kg.</p>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-3">해석 항목</th><th class="p-3">ANSYS 경계조건 및 하중 설정</th><th class="p-3">해석 결과 및 안전율 판정</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold text-amber-300">비틀림 강성 해석</td><td class="p-3">후륜 픽업 4점 Fixed Support / 전륜 픽업 좌·우 ±1,500 N 커플 모멘트 (T = 1,680 N·m, 변위 ±2.91mm, θ = 0.2978°)</td><td class="p-3 text-emerald-400 font-bold">K_torsion = 5,641 N·m/deg (비강성 212.9)<br>롤 강성(489.3)의 11.5배 (합격)</td></tr>
+                  <tr><td class="p-3 font-bold text-amber-300">제42조 SEF 1~2호 (MRH/FRH)</td><td class="p-3">최상단 노드에 F_x = 6.0 kN, F_y = 5.0 kN, F_z = -9.0 kN 동시 인가 (상단 80mm 브레이싱 + 2.0t 거셋)</td><td class="p-3 text-emerald-400">• MRH: 변형 7.8mm, 응력 218.4 MPa (SF = 1.74)<br>• FRH: 변형 6.4mm, 응력 196.2 MPa (SF = 1.94)</td></tr>
+                  <tr><td class="p-3 font-bold text-amber-300">제42조 SEF 3~4호 (측면/벌크헤드)</td><td class="p-3">측면 중앙(Ø250mm) F_y = 7.0 kN 인가 / 전방 벌크헤드 전면 F_x = 120.0 kN 인가</td><td class="p-3 text-emerald-400">• 측면: 변형 11.2mm, 응력 224.0 MPa (SF = 1.70)<br>• 벌크헤드: 변형 5.1mm, 응력 241.5 MPa (SF = 1.57)</td></tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
-        <!-- Telemetry Graph Canvas -->
-        <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 relative">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs font-mono text-emerald-400 flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              모터 RPM & 파워 트렌드 (실시간 CAN 패킷 파형)
-            </span>
-            <button onclick="toggleTelemetrySim()" id="telemetryToggleBtn" class="px-3 py-1 text-xs font-mono rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition">
-              일시정지
+        <!-- Sub-tab 2: Suspension & Drivetrain Structural/Fatigue (Sec 5, 7) -->
+        <div id="ansys-susp" class="analysis-subpane space-y-6 hidden">
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">① Al 7075-T651 위상최적화 업라이트 & CFRP 하이브리드 위시본 해석 (Sec 5)</h4>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <span class="text-cyan-400 font-bold block">Al 7075-T651 2.5D 포켓 업라이트 (단품 640g)</span>
+                <p class="text-slate-300">• 극한 복합 하중(3.0g 범프 + 1.48g 제동 + 1.72g 선회) 동시 인가: F_z,max = 3,250 N, 캘리퍼 접선력 F_cal = 13,290 N, 로어암 압축 8,295 N / 어퍼암 인장 3,095 N</p>
+                <p class="text-emerald-400 font-bold">• 결과: 최대 등가응력 σ_max = 207.8 MPa (SF = 2.42 ≥ 2.0), 최대 변형 0.28mm (캠버 변형 0.08° 이내), 피로 수명 1.2×10⁶ cycles</p>
+              </div>
+              <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+                <span class="text-amber-400 font-bold block">CFRP 카본 튜브 + Al 7075 인서트 위시본 (-1.8kg 감량)</span>
+                <p class="text-slate-300">• 규격: Ø16.0×1.5t (내경 Ø13.0mm) 카본 파이프 + Al 7075 인서트 (접착 길이 L_bond = 35mm, 3M DP490 에폭시)</p>
+                <p class="text-emerald-400 font-bold">• 결과: 최대 축력 6,200 N 작용 시 평균 전단응력 τ_avg = 4.34 MPa (허용치 24.5 MPa 대비 안전율 SF = 5.65 확보)</p>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">② 초저관성 구동계(m_eq 18.4kg → 8.4kg) 구조 및 피로 해석 세팅표 (Sec 7)</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-3">부품명 (재질 및 중량)</th><th class="p-3">ANSYS 경계조건 및 설계 수식</th><th class="p-3">해석 결과 및 안전율 판정</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold text-cyan-300">52T/54T 퀵체인지 스프로킷<br>(Al 7075-T651, 420g)</td><td class="p-3">구동컵 체결 6홀(PCD 76mm) Cylindrical Support / 체인 맞물림 7개 치면 총 4,000N 접선력 분배 인가 (두께 7.0mm)</td><td class="p-3 text-emerald-400">• 최대 응력: 211.3 MPa (SF = 2.38)<br>• 회전관성 -74.4% 저감, 50μm 경질 아노다이징</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">박육 스캘럽 구동컵<br>(SAE 4340 열처리, 580g)</td><td class="p-3">동심 및 6810 저널 베어링 안착면 구속 / 내부 트라이포드 3개 롤러 홈에 최대 토크 187.5 N·m (법선력 각 2,604 N) 인가</td><td class="p-3 text-emerald-400">• 최대 응력: 348.0 MPa (항복 860 대비 SF = 2.47)<br>• 최대 비틀림 변위: 0.06 mm 이내</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">건드릴 중공 CV 반축<br>(SAE 4340, Ø22×Ø12.5)</td><td class="p-3">중공축 비틀림 전단응력: τ_max = (16·T₂·d_o)/[π·(d_o⁴ - d_i⁴)] = 98.6 MPa</td><td class="p-3 text-emerald-400">• 전단 항복강도(496 MPa) 대비 SF = 5.03<br>• 스플라인 루트부(Kt=1.8 반영) SF = 2.79</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tab 3: Brake Thermal-Structural & Aero CFD (Sec 8, 9) -->
+        <div id="ansys-AeroThermal" class="analysis-subpane space-y-6 hidden">
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">① 2,000N 페달박스 및 SUS420J2 플로팅 웨이브 로터 열-구조 연성 해석 (Sec 8)</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-3">해석 대상</th><th class="p-3">열·구조 연성 경계조건 입력값</th><th class="p-3">해석 결과 및 검증</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold text-rose-300">위상최적화 브레이크 페달 암<br>(Al 7075-T651, 285g)</td><td class="p-3">피벗 축 Cylindrical Support, 밸런스바 홀 Pin Support, 발판 패드 전면 규정 극한 답력 F_pedal = 2,000 N 법선 인가</td><td class="p-3 text-emerald-400">• 최대 등가응력: 266.1 MPa (SF = 1.89 ≥ 1.5)<br>• 페달 팁 최대 처짐: 1.42 mm</td></tr>
+                  <tr><td class="p-3 font-bold text-rose-300">플로팅 웨이브 브레이크 로터<br>(SUS420J2 3.5t + 7075 벨, 410g)</td><td class="p-3">75→20 km/h 연속 5회 급제동 (Heat Flux 1.42 MW/m², 대류 h=95 W/m²·K) + 6-보빈 반경방향 열팽창 자유도 + 제동토크 433.8 N·m</td><td class="p-3 text-emerald-400">• 최고 표면 온도: 384.2°C (중실 디스크 대비 -107.8°C)<br>• 복합 응력: 214.6 MPa (SF = 3.03)<br>• 축방향 코닝 열변형: 0.032 mm (-91.6% 억제)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">② 언더트레이 벤투리 디퓨저 외부 유동(CFD) 및 NACA 덕트 방열(CHT) 해석 (Sec 9)</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-3">ANSYS Fluent 영역</th><th class="p-3">격자 및 경계조건 설정</th><th class="p-3">검증 결과 및 성능 향상</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold text-cyan-300">풀-플랫 벤투리 디퓨저<br>(SST k-ω, 팽창각 9.5°)</td><td class="p-3">Poly-Hexcore 480만 격자(y+ &lt; 1.0), 유입 유속 16.67 m/s (60km/h), 스로트 지상고 z=+65mm (유속 26.2 m/s 가속, C_p,min = -1.45)</td><td class="p-3 text-emerald-400">• 다운포스: 185.2 N (60km/h) / 252.1 N (70km/h), C_L = -0.84<br>• 항력계수 C_D: 0.620 → 0.506 (-18.3% 저감, L/D = 1.66)</td></tr>
+                  <tr><td class="p-3 font-bold text-cyan-300">사이드포드 NACA 0012-64<br>(CHT 열-유동 연성)</td><td class="p-3">입구 140×42mm, 팽창각 7° (채널당 유량 0.094 kg/s, 외기 32°C), 발열원: 인버터 360W + 듀얼모터 840W</td><td class="p-3 text-emerald-400">• 인버터 방열판 최고 온도: 56.2°C (무냉각 94.5°C 대비 -38.3°C)<br>• 모터 권선 최고 온도: 78.4°C (내구 50랩 열 디레이팅 0%)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tab 4: DFMEA & 150-Point Design Report Mapping (Sec 9, 10) -->
+        <div id="ansys-dfmea" class="analysis-subpane space-y-6 hidden">
+          <div>
+            <h4 class="text-sm text-emerald-400 font-bold mb-2">① 5대 핵심 서브시스템 DFMEA 요약표 (SAE J1739 표준, 전 항목 RPN ≤ 36 - Sec 10)</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr><th class="p-2.5">서브시스템</th><th class="p-2.5">잠재적 고장모드</th><th class="p-2.5">초기 RPN</th><th class="p-2.5">2027 Team_Dynamics 예방·검출 대책</th><th class="p-2.5">개선 후 RPN</th></tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-2.5 font-bold text-amber-300">1. 58V 배터리팩</td><td class="p-2.5">고율 방전 발열·단락 열폭주 및 10kW 초과 실격</td><td class="p-2.5 text-rose-400">160 (10×4×4)</td><td class="p-2.5">초저저항 Molicel P45B(8.5mΩ) + Cu-Ni 레이저 버스바 + 14S 셀 퓨즈 + NTC 8채널 BMS & 82A×2 제한</td><td class="p-2.5 text-emerald-400 font-bold">20 (10×1×2)</td></tr>
+                  <tr><td class="p-2.5 font-bold text-amber-300">2. 가속·구동 제어</td><td class="p-2.5">스로틀 단선/합선 급발진 또는 하드웨어 BSPD DNF</td><td class="p-2.5 text-rose-400">144 (9×4×4)</td><td class="p-2.5">역구배 이중 홀 APPS(10% 편차 100ms 차단) + 20ms 소프트 BSPD 프리컷 + 500ms 아날로그 BSPD</td><td class="p-2.5 text-emerald-400 font-bold">18 (9×1×2)</td></tr>
+                  <tr><td class="p-2.5 font-bold text-amber-300">3. 제동 로터·유압</td><td class="p-2.5">반복 제동 디스크 열변형 코닝 및 페달 암 굴절</td><td class="p-2.5 text-rose-400">135 (9×5×3)</td><td class="p-2.5">SUS420J2 6-보빈 플로팅 로터(코닝 0.032mm) + 듀얼 MC 독립 유압 루프 + Al 7075 페달 암(SF=1.89)</td><td class="p-2.5 text-emerald-400 font-bold">27 (9×1×3)</td></tr>
+                  <tr><td class="p-2.5 font-bold text-amber-300">4. 현가 업라이트·암</td><td class="p-2.5">복합 하중 클레비스 피로 파단 및 인서트 분리</td><td class="p-2.5 text-rose-400">128 (8×4×4)</td><td class="p-2.5">Al 7075 업라이트 R6.0 필렛(SF=2.42) + CFRP 위시본 DP490 35mm 전단 접착(SF=5.65) + 중공 4340 반축</td><td class="p-2.5 text-emerald-400 font-bold">24 (8×1×3)</td></tr>
+                  <tr><td class="p-2.5 font-bold text-amber-300">5. 트러스 프레임</td><td class="p-2.5">롤후프 전도 좌굴 또는 용접 열변형 얼라인먼트 틀어짐</td><td class="p-2.5 text-rose-400">144 (9×4×4)</td><td class="p-2.5">냉간인발 STKM13C(380MPa) + MRH 80mm 브레이싱·2.0t 거셋(SF=1.74) + 4축 레이저 노칭 & 5.0t 지그</td><td class="p-2.5 text-emerald-400 font-bold">36 (9×1×4)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="p-6 border-t border-slate-800 bg-slate-900/90 flex justify-end">
+        <button onclick="closeModal('analysisModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
+          닫기
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 4: 배선 (하네스 결선표 · BSPD 핀맵 · STM32 C 펌웨어) ==================== -->
+  <div id="wiringModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+    <div class="bg-slate-900 border border-rose-500/50 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
+        <div>
+          <span class="text-xs font-mono text-rose-400 font-semibold">[ZONE 04] HV/LV ELECTRICAL ARCHITECTURE & STM32F7 FIRMWARE</span>
+          <h3 class="text-2xl font-tech font-bold text-white">배선 매뉴얼 (From-To 결선표 · 아날로그 BSPD 핀맵 · STM32 제어 코드)</h3>
+        </div>
+        <button onclick="closeModal('wiringModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Sub-tabs inside Wiring Modal -->
+      <div class="px-6 pt-4 border-b border-slate-800 bg-slate-950/60 flex gap-2 overflow-x-auto text-xs font-mono">
+        <button onclick="switchSubTab('wiring', 'wire-table', this)" class="wiring-tab-btn px-3.5 py-2 rounded-t-lg bg-rose-500/20 text-rose-300 border-b-2 border-rose-400 font-bold whitespace-nowrap">1. 전체 하네스 From-To 결선표</button>
+        <button onclick="switchSubTab('wiring', 'wire-bspd', this)" class="wiring-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">2. 아날로그 BSPD 핀맵 & SDC 회로</button>
+        <button onclick="switchSubTab('wiring', 'wire-firmware', this)" class="wiring-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">3. STM32F767ZI C언어 펌웨어 코드팩</button>
+      </div>
+
+      <div class="p-6 space-y-6 text-xs font-mono">
+
+        <!-- Sub-tab 1: Harness From-To Table (Sec 14) -->
+        <div id="wire-table" class="wiring-subpane space-y-6">
+          <div>
+            <h4 class="text-sm text-rose-400 font-bold mb-2">① 전체 차량 하네스 From-To 배선 결선표 (Sec 14)</h4>
+            <p class="text-slate-400 mb-3">ND72530 인버터의 340A PWM 스위칭(12kHz) EMI 노이즈를 완벽히 차단하기 위해 HV 우측 하단 / LV 좌측 상단 100mm 이격 및 90° 직교 배선 원칙을 엄수합니다.</p>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th class="p-3">하네스 계통명</th>
+                    <th class="p-3">출발점 (From) → 도착점 (To)</th>
+                    <th class="p-3">전선 규격 및 차폐 사양</th>
+                    <th class="p-3">방수 커넥터 규격</th>
+                    <th class="p-3">보호 소자 및 배선 원칙</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr>
+                    <td class="p-3 font-bold text-amber-400">1. HV 주동력선<br>(Traction HV)</td>
+                    <td class="p-3">58V 배터리팩(AIR±) → 에너지미터 → ND72530 인버터 L/R</td>
+                    <td class="p-3">35 sqmm (AWG 2) 주황색 유연 실리콘 편조 차폐선</td>
+                    <td class="p-3">Amphenol SurLok Plus (또는 M8 볼트+절연부츠)</td>
+                    <td class="p-3 text-emerald-400">• 메인 퓨즈 200A (울트라 래피드)<br>• 우측 하단 프레임 단독 포설</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold text-rose-400">2. 셧다운 루프 (SDC)<br>(직렬 안전 회로)</td>
+                    <td class="p-3">LV 마스터 → IMD → AMS → BSPD → E-Stop(×3) → BOTS → 관성스위치 → AIR 코일</td>
+                    <td class="p-3">AWG 18 (0.82 sqmm) 적/백 트위스트 난연 테프론선</td>
+                    <td class="p-3">Deutsch DT06-2S / DT04-2P (IP68, 13A 정격)</td>
+                    <td class="p-3 text-emerald-400">• 5A 블레이드 퓨즈 + 플라이백 다이오드(1N4007) 역기전력 흡수</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold text-cyan-400">3. CAN-FD 통신망<br>(1 Mbps 고속 버스)</td>
+                    <td class="p-3">STM32 VCU ↔ BMS ↔ 인버터 L/R ↔ 스티어링 OLED &amp; LoRa</td>
+                    <td class="p-3">AWG 22 알루미늄 마일러 차폐 연선 (STP, 120Ω, 미터당 38회 꼬임)</td>
+                    <td class="p-3">Deutsch DTM06-4S (Pin1:5V, 2:CAN_H, 3:CAN_L, 4:GND)</td>
+                    <td class="p-3 text-emerald-400">• 양 끝단 60Ω+60Ω 분할 종단 + 중앙 4.7nF 캡 접지 + TDK ACT45B 초크, VCU 단일점 차폐 접지</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-bold text-purple-400">4. 페달·조향 센서선<br>(아날로그 계측)</td>
+                    <td class="p-3">페달박스(APPS1/2, 유압센서) &amp; 조향(AS5147) → VCU / BSPD</td>
+                    <td class="p-3">AWG 22 3심/4심 차폐 케이블 (+5V_A / +5V_B 독립 전원 인가)</td>
+                    <td class="p-3">Deutsch DTM06-6S (IP68 금도금 접점)</td>
+                    <td class="p-3 text-emerald-400">• HV 라인과 최소 100mm 이격 (좌측 상단 프레임), 불가피한 교차 시 90° 직교</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="text-sm text-rose-400 font-bold mb-2">② 1 Mbps CAN-FD 메시지 우선순위 할당 (버스 부하 34.2% - Sec 10)</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-rose-400 font-bold">ID: 0x010 (10ms, 최상위)</span>
+                <p class="text-slate-300 mt-1">비상 셧다운(SDC) 상태, IMD 절연저항, BMS 폴트 신호</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-cyan-400 font-bold">ID: 0x101~0x102 (5ms, 200Hz)</span>
+                <p class="text-slate-300 mt-1">좌·우 ND72530 인버터 목표 토크 지령, RPM, 82A 전류 제한(0x52)</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-emerald-400 font-bold">ID: 0x201 (10ms, 100Hz)</span>
+                <p class="text-slate-300 mt-1">LSM6DSL IMU 6축 가속도·요레이트 및 4륜 24-Tooth 휠스피드</p>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                <span class="text-amber-400 font-bold">ID: 0x301 (50ms, 20Hz)</span>
+                <p class="text-slate-300 mt-1">배터리 팩 전압·전류·최고 셀 온도 (915MHz LoRa 10Hz 무선 전송)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tab 2: Analog BSPD Pinout & Shutdown Circuit (Sec 8, 14) -->
+        <div id="wire-bspd" class="wiring-subpane space-y-6 hidden">
+          <div class="p-4 rounded-xl bg-slate-950 border border-rose-500/40 space-y-3">
+            <h4 class="text-sm text-rose-400 font-bold">① 비프로그래머블 아날로그 BSPD 기판 IC 핀맵 (LM2901B-Q1 SOIC-14 & CD4043B DIP/SOIC-16)</h4>
+            <p class="text-slate-300">마이크로컨트롤러(MCU)를 거치지 않는 순수 하드웨어 안전 장치로, 5kW 초과 전류(87A)와 급제동 유압(30 bar)이 500ms 이상 동시 지속될 때 메인 릴레이(AIR+/AIR-)를 하드웨어 래치 차단합니다.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
+              <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-amber-300 font-bold block mb-1">1. 전류 비교기 (채널 1, &gt;5kW [87A])</span>
+                <p class="text-slate-300">• 센서: 홀 효과 LEM DHAB S/118 (87A 시 2.848V 출력) → <span class="text-white font-bold">LM2901 Pin 4 (IN1-)</span> 입력</p>
+                <p class="text-slate-300 mt-1">• 기준 전압: V_ref,I = 2.85V (TL431 정밀 분압) → <span class="text-white font-bold">Pin 5 (IN1+)</span> 입력 → 과전류 시 오픈컬렉터 출력 <span class="text-cyan-400 font-bold">Pin 2 (OUT1)</span>가 High-Z로 전환</p>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-cyan-300 font-bold block mb-1">2. 유압 비교기 (채널 2, &gt;30 bar)</span>
+                <p class="text-slate-300">• 센서: 전륜 유압 센서 (0.5~4.5V, 30 bar 시 1.70V 출력) → <span class="text-white font-bold">LM2901 Pin 6 (IN2-)</span> 입력</p>
+                <p class="text-slate-300 mt-1">• 기준 전압: V_ref,P = 1.70V → <span class="text-white font-bold">Pin 7 (IN2+)</span> 입력 → 급제동 시 오픈컬렉터 출력 <span class="text-cyan-400 font-bold">Pin 1 (OUT2)</span>가 High-Z로 전환</p>
+              </div>
+              <div class="p-3 rounded-lg bg-slate-900 border border-slate-800">
+                <span class="text-emerald-300 font-bold block mb-1">3. Wired-AND & 500ms RC 지연 + 래치</span>
+                <p class="text-slate-300">• <span class="text-white font-bold">LM2901 Pin 1과 Pin 2</span>를 단일 노드로 묶고 R_delay = 470 kΩ 풀업 저항 및 C_delay = 1.0 μF 필름 커패시터 연결 (τ = R·C ≈ 500ms)</p>
+                <p class="text-slate-300 mt-1">• 두 조건 동시 발생 시 커패시터가 충전되어 <span class="text-rose-400 font-bold">CD4043B Pin 4 (S1, Set)</span> 트리거 → <span class="text-rose-400 font-bold">Pin 2 (Q1 출력)</span> High 고정(Latch) → SDC 릴레이(NC 접점) 개방</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <span class="text-cyan-400 font-bold block">② IMD · AMS · 프리차지 시퀀스 (Sec 8)</span>
+              <p class="text-slate-300">• <span class="text-white">절연감시장치(IMD):</span> Bender ISOMETER IR155-3204 (절연저항 500 Ω/V [약 30kΩ] 미만 시 폴트 래치 및 운전석 적색 LED 점등)</p>
+              <p class="text-slate-300">• <span class="text-white">프리차지(Pre-charge):</span> 시동 시 프리차지 릴레이와 100Ω 50W 권선 저항을 통해 인버터 커패시터 전압이 배터리 전압의 90% 이상(약 1.2초 소요) 도달 후에만 AIR+ 투입 (아크 융착 원천 방지)</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
+              <span class="text-amber-400 font-bold block">③ 58V 탭리스 배터리팩 내부 배선 (Sec 7)</span>
+              <p class="text-slate-300">• <span class="text-white">버스바:</span> 0.3t 무산소동(OFC) + 0.1t 니켈 클래드 복합 버스바 레이저 용접 (접촉 저항 75% 저감)</p>
+              <p class="text-slate-300">• <span class="text-white">보호 배선:</span> 각 직렬 단(14S)마다 퓨즈 와이어링(Cell-level fusing) 및 NTC 온도 센서 8채널 배치, UL94-V0 난연 외함 + 상부 퀵릴리즈 투명 점검창</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub-tab 3: STM32F767ZI Firmware C Code (Sec 15) -->
+        <div id="wire-firmware" class="wiring-subpane space-y-4 hidden">
+          <div class="flex items-center justify-between">
+            <div>
+              <h4 class="text-sm text-emerald-400 font-bold">STM32F767ZI 역구배 이중 APPS 10% 차단 FSM · 20ms 소프트 BSPD & CAN-FD 송신 코드 (Sec 15)</h4>
+              <p class="text-slate-400">FreeRTOS 이중 레이트(TIM2 100Hz DYC / TIM3 500Hz 슬립율 및 APPS 검증) 실무 C언어 구현체입니다.</p>
+            </div>
+            <button onclick="copyFirmwareCode()" class="px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-mono transition flex items-center gap-1.5 shrink-0">
+              <i class="fa-solid fa-copy"></i> C 코드 전체 복사
             </button>
           </div>
-          <canvas id="liveTelemetryChart" class="w-full h-44 rounded-lg bg-black/40"></canvas>
+
+          <pre id="stm32CodeBlock" class="p-4 rounded-xl bg-black border border-slate-800 text-emerald-300 overflow-x-auto text-[11px] leading-relaxed select-all"><code>/* =========================================================================================
+ * 2027 Team_Dynamics Dual APPS & Soft BSPD Plausibility Check (KSAE Rule Compliant)
+ * Target MCU: STM32F767ZI | Core Clock: 216MHz | Execution Cycle: 2ms (500Hz, TIM3)
+ * ========================================================================================= */
+typedef enum {
+    APPS_STATE_IDLE = 0,
+    APPS_STATE_NORMAL_DRIVE,
+    APPS_STATE_IMPLAUSIBLE,
+    APPS_STATE_FAULT_LOCKOUT
+} APPS_FSM_State_t;
+
+static APPS_FSM_State_t g_apps_state = APPS_STATE_IDLE;
+static uint32_t g_implausible_timer_ms = 0;
+
+void APPS_Plausibility_Task_2ms(float raw_apps1_v, float raw_apps2_v, float brake_bar, float *out_torque_cmd) {
+    /* 1. Range Check (0.5V~4.5V normal, &lt;0.35V or &gt;4.65V Wire Short/Break Fault) */
+    if (raw_apps1_v &lt; 0.35f || raw_apps1_v &gt; 4.65f || raw_apps2_v &lt; 0.35f || raw_apps2_v &gt; 4.65f) {
+        g_apps_state = APPS_STATE_FAULT_LOCKOUT;
+        *out_torque_cmd = 0.0f;
+        return;
+    }
+
+    /* 2. Stroke Normalization (APPS1: Positive slope 0.5-&gt;4.5V, APPS2: Negative slope 4.5-&gt;0.5V) */
+    float stroke1 = (raw_apps1_v - 0.50f) / (4.50f - 0.50f) * 100.0f;
+    float stroke2 = (4.50f - raw_apps2_v) / (4.50f - 0.50f) * 100.0f;
+    if (stroke1 &lt; 0.0f) stroke1 = 0.0f; else if (stroke1 &gt; 100.0f) stroke1 = 100.0f;
+    if (stroke2 &lt; 0.0f) stroke2 = 0.0f; else if (stroke2 &gt; 100.0f) stroke2 = 100.0f;
+    float stroke_diff = fabsf(stroke1 - stroke2);
+
+    /* 3. Finite State Machine (10% Implausibility for &gt;100ms Rule) */
+    switch (g_apps_state) {
+        case APPS_STATE_IDLE:
+        case APPS_STATE_NORMAL_DRIVE:
+            if (stroke_diff &gt; 10.0f) {
+                g_apps_state = APPS_STATE_IMPLAUSIBLE;
+                g_implausible_timer_ms = 0;
+            } else {
+                g_apps_state = (stroke1 &gt; 3.0f) ? APPS_STATE_NORMAL_DRIVE : APPS_STATE_IDLE;
+            }
+            break;
+
+        case APPS_STATE_IMPLAUSIBLE:
+            if (stroke_diff &lt;= 10.0f) {
+                g_apps_state = APPS_STATE_NORMAL_DRIVE;
+                g_implausible_timer_ms = 0;
+            } else {
+                g_implausible_timer_ms += 2;
+                if (g_implausible_timer_ms &gt;= 100) { /* &gt;100ms Latch Lockout */
+                    g_apps_state = APPS_STATE_FAULT_LOCKOUT;
+                }
+            }
+            break;
+
+        case APPS_STATE_FAULT_LOCKOUT:
+            /* Latch persists until pedal fully released (&lt;5%) and deviation cleared */
+            if (stroke1 &lt; 5.0f &amp;&amp; stroke2 &lt; 5.0f &amp;&amp; stroke_diff &lt; 5.0f) {
+                g_apps_state = APPS_STATE_IDLE;
+            }
+            *out_torque_cmd = 0.0f;
+            return;
+    }
+
+    /* 4. Software BSPD Pre-Cutoff (Brake &gt; 15 bar &amp;&amp; Throttle &gt; 25% for 20ms -&gt; Soft Cut to 0 Nm) */
+    static uint32_t soft_bspd_timer_ms = 0;
+    if (brake_bar &gt; 15.0f &amp;&amp; stroke1 &gt; 25.0f) {
+        soft_bspd_timer_ms += 2;
+        if (soft_bspd_timer_ms &gt;= 20) {
+            *out_torque_cmd = 0.0f;
+            return;
+        }
+    } else {
+        soft_bspd_timer_ms = 0;
+    }
+
+    /* 5. Safe Base Torque Command Output (Mapped to 0~50 N.m per motor) */
+    *out_torque_cmd = (stroke1 / 100.0f) * 50.0f;
+}
+
+/* =========================================================================================
+ * CAN-FD Dual Inverter Torque Command Transmission (200Hz, 5ms Interval)
+ * CAN ID: 0x101 (Left ND72530), 0x102 (Right ND72530) | Baud: 1Mbps
+ * ========================================================================================= */
+void CAN_Send_Inverter_Command(CAN_HandleTypeDef *hcan, float t_left_nm, float t_right_nm, uint16_t max_rpm) {
+    CAN_TxHeaderTypeDef tx_header;
+    uint8_t tx_data[8];
+    uint32_t tx_mailbox;
+
+    tx_header.IDE = CAN_ID_STD;
+    tx_header.RTR = CAN_RTR_DATA;
+    tx_header.DLC = 8;
+
+    /* Left Motor Packet (0x101) */
+    uint16_t raw_t_left = (uint16_t)(t_left_nm * 10.0f); /* 0.1 N.m / LSB */
+    tx_header.StdId = 0x101;
+    tx_data[0] = 0x01;                           /* Control Word: Enable Drive */
+    tx_data[1] = (uint8_t)(raw_t_left &gt;&gt; 8);     /* Target Torque MSB */
+    tx_data[2] = (uint8_t)(raw_t_left &amp; 0xFF);   /* Target Torque LSB */
+    tx_data[3] = (uint8_t)(max_rpm &gt;&gt; 8);        /* Max Speed Limit MSB */
+    tx_data[4] = (uint8_t)(max_rpm &amp; 0xFF);      /* Max Speed Limit LSB */
+    tx_data[5] = 0x52;                           /* Line Current Limit: 82A */
+    tx_data[6] = 0x00; tx_data[7] = 0x00;
+    HAL_CAN_AddTxMessage(hcan, &amp;tx_header, tx_data, &amp;tx_mailbox);
+
+    /* Right Motor Packet (0x102) */
+    uint16_t raw_t_right = (uint16_t)(t_right_nm * 10.0f);
+    tx_header.StdId = 0x102;
+    tx_data[1] = (uint8_t)(raw_t_right &gt;&gt; 8);
+    tx_data[2] = (uint8_t)(raw_t_right &amp; 0xFF);
+    HAL_CAN_AddTxMessage(hcan, &amp;tx_header, tx_data, &amp;tx_mailbox);
+}</code></pre>
         </div>
 
-        <!-- Session Test Logs -->
+      </div>
+
+      <div class="p-6 border-t border-slate-800 bg-slate-900/90 flex justify-end">
+        <button onclick="closeModal('wiringModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
+          닫기
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ==================== MODAL 5: 제작 (10단계 제작 시퀀스 · DFM · 트랙 셋업 · 33품목 BOM · 4단계 검차) ==================== -->
+  <div id="manufacturingModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+    <div class="bg-slate-900 border border-blue-500/50 rounded-2xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
+      
+      <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
         <div>
-          <h4 class="text-xs font-mono text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <i class="fa-solid fa-clipboard-list text-cyan-400"></i> 최근 서킷 벤치 주행 로그
-          </h4>
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs font-mono border-collapse">
-              <thead>
-                <tr class="border-b border-slate-800 text-slate-400">
-                  <th class="py-2 px-3">세션 ID</th>
-                  <th class="py-2 px-3">테스트 항목</th>
-                  <th class="py-2 px-3">최고속도</th>
-                  <th class="py-2 px-3">평균 소비전력</th>
-                  <th class="py-2 px-3">상태</th>
-                </tr>
+          <span class="text-xs font-mono text-blue-400 font-semibold">[ZONE 05] 10-STEP BUILD SEQUENCE &amp; 33-ITEM COST BOM</span>
+          <h3 class="text-2xl font-tech font-bold text-white">제작 매뉴얼 (10단계 조립 순서 · DFM 플랜 B · 3대 종목 셋업 · 상세 견적서)</h3>
+        </div>
+        <button onclick="closeModal('manufacturingModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Sub-tabs inside Manufacturing Modal -->
+      <div class="px-6 pt-4 border-b border-slate-800 bg-slate-950/60 flex gap-2 overflow-x-auto text-xs font-mono">
+        <button onclick="switchSubTab('mfg', 'mfg-steps', this)" class="mfg-tab-btn px-3.5 py-2 rounded-t-lg bg-blue-500/20 text-blue-300 border-b-2 border-blue-400 font-bold whitespace-nowrap">1. 10단계 자동차 제작 순서</button>
+        <button onclick="switchSubTab('mfg', 'mfg-dfm', this)" class="mfg-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">2. 동아리 실현가능성(DFM) &amp; 플랜 B</button>
+        <button onclick="switchSubTab('mfg', 'mfg-setup', this)" class="mfg-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">3. 코너웨이트 &amp; 3대 종목 셋업</button>
+        <button onclick="switchSubTab('mfg', 'mfg-bom', this)" class="mfg-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">4. 33대 품목 상세 견적서 (1,485만원)</button>
+        <button onclick="switchSubTab('mfg', 'mfg-scrutineering', this)" class="mfg-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap">5. KSAE 4단계 기술검차 원패스</button>
+      </div>
+
+      <div class="p-6 space-y-6 text-xs font-mono">
+
+        <!-- Sub-tab 1: 10-Step Vehicle Build Sequence (Sec 14) -->
+        <div id="mfg-steps" class="mfg-subpane space-y-4">
+          <div class="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-between">
+            <div>
+              <h4 class="text-sm font-bold text-white">조립 역전(재분해 참사) 방지 10단계 단방향 제작 시퀀스 (Sec 14)</h4>
+              <p class="text-slate-300 mt-0.5">각 단계를 클릭하면 완료(DONE) 상태를 체크할 수 있으며 메인 화면 공정률 바와 연동됩니다.</p>
+            </div>
+            <button onclick="resetBuildSteps()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition shrink-0">
+              공정 초기화
+            </button>
+          </div>
+          <div id="buildStepsContainer" class="space-y-2.5">
+            <!-- JS로 렌더링 -->
+          </div>
+        </div>
+
+        <!-- Sub-tab 2: DFM & Fallback Plan B (Sec 14) -->
+        <div id="mfg-dfm" class="mfg-subpane space-y-4 hidden">
+          <h4 class="text-sm text-blue-400 font-bold">학부 동아리 여건 기준 실현 가능성(Feasibility) 냉철 진단 및 플랜 B (Sec 14)</h4>
+          <div class="overflow-x-auto rounded-xl border border-slate-800">
+            <table class="w-full text-left">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                <tr><th class="p-3">엔지니어링 분야</th><th class="p-3">실현 가능성 (난이도)</th><th class="p-3">학부생 제작 시 잠재적 병목 요인</th><th class="p-3">100% 완주 보장 대책(DFM) 및 안전 플랜 B (Fallback)</th></tr>
               </thead>
-              <tbody class="divide-y divide-slate-800/60 text-slate-300">
-                <tr>
-                  <td class="py-2.5 px-3 text-cyan-400">RUN_#204</td>
-                  <td class="py-2.5 px-3">75m 가속 코스 발진 테스트</td>
-                  <td class="py-2.5 px-3">104.2 km/h</td>
-                  <td class="py-2.5 px-3">48.2 kW</td>
-                  <td class="py-2.5 px-3 text-emerald-400">통과 (3.64초)</td>
-                </tr>
-                <tr>
-                  <td class="py-2.5 px-3 text-cyan-400">RUN_#203</td>
-                  <td class="py-2.5 px-3">슬라럼 코너링 횡G 측정</td>
-                  <td class="py-2.5 px-3">58.7 km/h</td>
-                  <td class="py-2.5 px-3">22.1 kW</td>
-                  <td class="py-2.5 px-3 text-emerald-400">안정 (최대 1.35G)</td>
-                </tr>
-                <tr>
-                  <td class="py-2.5 px-3 text-cyan-400">RUN_#202</td>
-                  <td class="py-2.5 px-3">20분 연속 내구 주행 시뮬레이션</td>
-                  <td class="py-2.5 px-3">92.0 km/h</td>
-                  <td class="py-2.5 px-3">35.4 kW</td>
-                  <td class="py-2.5 px-3 text-amber-400">배터리 온도 48°C 도달</td>
-                </tr>
+              <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                <tr><td class="p-3 font-bold text-cyan-300">1. 프레임·박스 지그<br>(STKM13C, 26.5kg)</td><td class="p-3 text-emerald-400 font-bold">98% (최상)<br>난이도: 하</td><td class="p-3">수작업 그라인더 노칭 시 각도 불일치 및 용접 열변형</td><td class="p-3">• STEP 파일 기반 외주 4축 튜브 레이저 탭-앤-슬롯 가공(62만원) + 5.0t 판재 지그로 레고처럼 정밀 조립</td></tr>
+                <tr><td class="p-3 font-bold text-cyan-300">2. CNC·구동 가공품<br>(업라이트·반축·암)</td><td class="p-3 text-emerald-400 font-bold">86% → 100%<br>난이도: 중상</td><td class="p-3">5축 유기적 형상은 교내 3축 밀링 불가 / CFRP 에폭시 양생 관리 부담</td><td class="p-3">• [DFM] 언더컷 없는 2.5D 직선 트러스 포켓 형상으로 설계 확정<br>• [플랜 B] CFRP 위시본 지연 시 SAE 4130 크로몰리 용접 위시본(+0.9kg) 즉시 대체</td></tr>
+                <tr><td class="p-3 font-bold text-cyan-300">3. 58V 배터리팩<br>(P45B 182셀, 17.5kg)</td><td class="p-3 text-emerald-400 font-bold">88% → 100%<br>난이도: 중</td><td class="p-3">동아리방 일반 스폿 용접기로는 0.3t 구리 클래드 용접 불가</td><td class="p-3">• [기본안] 배터리 전문 공방 레이저 용접 반일 외주(44만원 예산 반영)<br>• [플랜 B] 자체 제작 시 0.2t 순니켈 다층 스폿 용접 + 구리 버스바 볼트 체결 전환</td></tr>
+                <tr><td class="p-3 font-bold text-cyan-300">4. 전장·토크벡터링<br>(STM32 &amp; BSPD)</td><td class="p-3 text-emerald-400 font-bold">94% → 100%<br>난이도: 중하</td><td class="p-3">초기부터 복잡한 슬립율+요레이트 동시 제어 적용 시 디버깅 지연 우려</td><td class="p-3">• [3단계 점진 코딩] Stage 1(좌우 동일 토크 기본 주행) → Stage 2(조향각 비례 피드포워드) → Stage 3(IMU/슬립율 PID) 순차 구현</td></tr>
+                <tr><td class="p-3 font-bold text-cyan-300">5. 에어로 언더트레이<br>(벤투리 디퓨저)</td><td class="p-3 text-emerald-400 font-bold">90% → 100%<br>난이도: 중하</td><td class="p-3">복잡한 3D 암몰드(Female Mold) 제작 시 비용·시간 과다</td><td class="p-3">• 평판 바닥 + 단일 경사각(9.5°) 절곡 XPS 핑크폼/MDF 수몰드 위에서 진공 배깅(Vacuum Bagging)하여 3일 내 완성</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-      </div>
-
-      <div class="p-6 border-t border-slate-800 bg-slate-900/90 flex justify-end">
-        <button onclick="closeModal('telemetryModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
-          닫기
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ==================== MODAL 4: TOOLS & SCRUTINEERING (공구함 & 공식 검차) ==================== -->
-  <div id="toolsModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
-    <div class="bg-slate-900 border border-rose-500/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-      
-      <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
-        <div>
-          <span class="text-xs font-mono text-rose-400 font-semibold">[PADDOCK ZONE 04] KSAE SCRUTINEERING</span>
-          <h3 class="text-2xl font-tech font-bold text-white">전기차 안전 규정 검차 체크리스트</h3>
-        </div>
-        <button onclick="closeModal('toolsModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
-
-      <div class="p-6 space-y-6">
-
-        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-triangle-exclamation text-rose-400 text-xl"></i>
-            <div>
-              <h5 class="text-sm font-bold text-white">KSAE 전기 검차 필수 통과 규정</h5>
-              <p class="text-xs text-slate-300">팀원 누구나 점검 항목을 클릭하여 실시간으로 체크 상태를 업데이트할 수 있습니다.</p>
+        <!-- Sub-tab 3: Corner Weight & 3-Event Race Setup Matrix (Sec 12) -->
+        <div id="mfg-setup" class="mfg-subpane space-y-6 hidden">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-cyan-400 font-bold block">① 4륜 디지털 코너웨이트 (50.00% Cross-Weight)</span>
+              <p class="text-slate-300">• 운전자(75kg) 탑승 총중량 238.00kg 기준: <span class="text-white font-bold">전륜 FL = FR = 54.75 kg (합 109.5kg, 46%) / 후륜 RL = RR = 64.25 kg (합 128.5kg, 54%)</span></p>
+              <p class="text-slate-300">• 턴버클 조정 공식: FL-RR 대각선이 무거우면 FL(또는 RR) 푸시로드 M8 턴버클을 1/4바퀴(ΔL = -0.31mm → 약 -1.2kg 이동) 축소하고 동시에 FR(또는 RL)을 1/4바퀴 연장</p>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-amber-400 font-bold block">② 스트링 얼라인먼트 &amp; 피로미터 캠버 튜닝</span>
+              <p class="text-slate-300">• 정적 토우: <span class="text-white font-bold">전륜 토우아웃 -0.3°/륜 (림 전·후 거리차 Δd = -2.4mm) / 후륜 토우인 +0.2°/륜 (Δd = +1.6mm)</span></p>
+              <p class="text-slate-300">• 정적 캠버: <span class="text-white font-bold">전륜 -1.8° / 후륜 -1.2°</span> (5랩 주행 직후 타이어 온도 T_in 68°C - T_out 64°C = 4.0°C 구배 유지)</p>
             </div>
           </div>
-          <button onclick="resetChecklist()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-mono transition">
-            초기화
-          </button>
-        </div>
 
-        <!-- Checklist Item List -->
-        <div id="checklistContainer" class="space-y-3 font-mono text-xs">
-          <!-- Dynamically populated via JS -->
+          <div>
+            <h4 class="text-sm text-blue-400 font-bold mb-2">③ 2027 KSAE 대회 3대 동적 종목 마스터 우승 셋업 시트 (Sec 12)</h4>
+            <div class="overflow-x-auto rounded-xl border border-slate-800">
+              <table class="w-full text-left">
+                <thead class="bg-slate-950 text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th class="p-3">셋업 파라미터</th>
+                    <th class="p-3 text-cyan-300">Mode 1: 가속 경기 (70m 직선)<br>[목표: 5.68초 우승]</th>
+                    <th class="p-3 text-amber-300">Mode 2: 짐카나 (슬라럼·헤어핀)<br>[목표: 회전반경 3.01m 우승]</th>
+                    <th class="p-3 text-emerald-300">Mode 3: 내구레이스 (50랩/22km)<br>[목표: 열 디레이팅 0% 완주 우승]</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-800 bg-slate-900/40 text-slate-300">
+                  <tr><td class="p-3 font-bold">스프로킷 기어비<br>(5분 퀵체인지)</td><td class="p-3">14T : 54T (i = 3.857)<br>초반 견인 토크 +3.9% 극대화</td><td class="p-3">14T : 54T (i = 3.857)<br>코너 탈출 즉각적인 재가속 응답</td><td class="p-3">14T : 52T (i = 3.714)<br>모터 고효율 구간(4,500rpm) 순항</td></tr>
+                  <tr><td class="p-3 font-bold">타이어 열간 공기압<br>(전륜 / 후륜)</td><td class="p-3">전 1.25 bar / 후 0.95 bar<br>(후륜 종방향 접지 면적 극대화)</td><td class="p-3">전 1.10 bar / 후 1.05 bar<br>(최대 횡그립 1.72g 확보)</td><td class="p-3">전 1.15 bar / 후 1.10 bar<br>(50랩 마모 균일화 및 65~70°C 유지)</td></tr>
+                  <tr><td class="p-3 font-bold">댐퍼 감쇠력 &amp; 캠버</td><td class="p-3">전륜 리바운드 소프트(하중이동 촉진)<br>후륜 캠버 -0.5° (직선 접지 극대화)</td><td class="p-3">전륜 범프/리바운드 하드(롤 응답)<br>정적 캠버 전 -1.8° / 후 -1.2°</td><td class="p-3">전·후 표준 감쇠 세팅(연석 흡수)<br>정적 캠버 전 -1.6° / 후 -1.0°</td></tr>
+                  <tr><td class="p-3 font-bold">VCU 전류·회생제동<br>(ND72530 × 2)</td><td class="p-3">라인 82A×2 (9.6kW 피크 밀착)<br>상전류 340A 부스트 / 회생 0%</td><td class="p-3">라인 82A×2 / 상전류 320A<br>코너 진입 오프스로틀 회생 15%</td><td class="p-3">라인 76A×2 (연속) / 상전류 280A<br>브레이크 연동 회생 25% (0.52kWh 회수)</td></tr>
+                  <tr><td class="p-3 font-bold">토크벡터링·슬립율<br>(STM32F767ZI)</td><td class="p-3">DYC 요 모멘트 OFF (대칭 구동)<br>500Hz 슬립율 λ_opt = 0.11 칼제어</td><td class="p-3">100Hz DYC 게인 100% (±334 N·m)<br>슬립율 제한 λ_opt = 0.12</td><td class="p-3">100Hz DYC 게인 75% (타이어 열보호)<br>슬립율 λ_opt = 0.09 (완주 잔량 24.6%)</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-      </div>
-
-      <div class="p-6 border-t border-slate-800 bg-slate-900/90 flex justify-end">
-        <button onclick="closeModal('toolsModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
-          닫기
-        </button>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ==================== MODAL 5: DOCUMENT CABINET (도면 & 규정집 허브) ==================== -->
-  <div id="cabinetModal" class="modal-wrapper fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
-    <div class="bg-slate-900 border border-blue-500/50 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative">
-      
-      <div class="p-6 border-b border-slate-800 flex items-center justify-between sticky top-0 bg-slate-900/95 backdrop-blur z-20">
-        <div>
-          <span class="text-xs font-mono text-blue-400 font-semibold">[PADDOCK ZONE 05] BLUEPRINTS & CLOUD VAULT</span>
-          <h3 class="text-2xl font-tech font-bold text-white">문서 캐비닛 & 외부 리소스 허브</h3>
+        <!-- Sub-tab 4: 33-Item Master Quotation BOM (Sec 11, 13) -->
+        <div id="mfg-bom" class="mfg-subpane space-y-4 hidden">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h4 class="text-sm text-blue-400 font-bold">7대 시스템 33대 품목 상세 부품 예상 견적서 (총액 14,850,000원 / 공차 163.00kg - Sec 13)</h4>
+            <span class="px-3 py-1 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">2026 대비 -3,400,000원 절감</span>
+          </div>
+          <div class="overflow-x-auto rounded-xl border border-slate-800 max-h-[52vh]">
+            <table class="w-full text-left">
+              <thead class="bg-slate-950 text-slate-400 border-b border-slate-800 sticky top-0">
+                <tr><th class="p-2.5">시스템 (소계/중량)</th><th class="p-2.5">세부 품목명 및 엔지니어링 규격</th><th class="p-2.5">조달 구분</th><th class="p-2.5">수량</th><th class="p-2.5 text-right">단가(원)</th><th class="p-2.5 text-right">합계(원)</th></tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800/60 bg-slate-900/40 text-slate-300 text-[11px]">
+                <!-- 1. 프레임·충돌 -->
+                <tr><td class="p-2 font-bold text-cyan-300" rowspan="5">1. 프레임·충돌<br>(1,850,000원)<br>[30.40 kg]</td><td class="p-2">1-1. 냉간인발 강관 STKM13C (Ø25.4×2.0t/1.6t, Ø20.0×1.2t, 밀시트 포함)</td><td class="p-2">Buy (철강 유통)</td><td class="p-2">32 m</td><td class="p-2 text-right">480,000</td><td class="p-2 text-right">480,000</td></tr>
+                <tr><td class="p-2">1-2. 4축 파이버 튜브 레이저 3D 노칭 (탭-앤-슬롯 +0.15mm 보정, 68부재)</td><td class="p-2">외주 가공</td><td class="p-2">68 개소</td><td class="p-2 text-right">620,000</td><td class="p-2 text-right">620,000</td></tr>
+                <tr><td class="p-2">1-3. 5.0t SS400 박스 용접 지그 (슬롯 레이저 커팅 판재 + Ø10 연마 핀 8조)</td><td class="p-2">Make (레이저+조립)</td><td class="p-2">1 세트</td><td class="p-2 text-right">320,000</td><td class="p-2 text-right">320,000</td></tr>
+                <tr><td class="p-2">1-4. Al 5052 허니컴 코어 IA &amp; AIP (210×110×205mm 코어 + 4.0t 7075 격벽)</td><td class="p-2">Buy+Make</td><td class="p-2">1 세트</td><td class="p-2 text-right">250,000</td><td class="p-2 text-right">250,000</td></tr>
+                <tr><td class="p-2">1-5. 이중 방화벽 및 용접 부자재 (0.6t Al+난연시트, ER70S-6 용접봉·아르곤·PT제)</td><td class="p-2">Buy+Make</td><td class="p-2">1 식</td><td class="p-2 text-right">180,000</td><td class="p-2 text-right">180,000</td></tr>
+                <!-- 2. 배터리·전장 -->
+                <tr><td class="p-2 font-bold text-amber-300" rowspan="7">2. 배터리·전장<br>(4,950,000원)<br>[27.00 kg]</td><td class="p-2">2-1. Molicel INR-21700-P45B 탭리스 셀 (4.5Ah, 45A, 8.5mΩ, 182셀+예비 18셀)</td><td class="p-2">Buy (NKON 직구)</td><td class="p-2">200 개</td><td class="p-2 text-right">7,800</td><td class="p-2 text-right">1,560,000</td></tr>
+                <tr><td class="p-2">2-2. Fardriver ND72530 인버터 컨트롤러 (82A 라인/340A 상전류, 수냉/방열판)</td><td class="p-2">Buy (Fardriver)</td><td class="p-2">2 대</td><td class="p-2 text-right">580,000</td><td class="p-2 text-right">1,160,000</td></tr>
+                <tr><td class="p-2">2-3. 절연감시장치 Bender IR155-3204 (500 Ω/V 감시, FSAE 팀 할인)</td><td class="p-2">Buy (Bender)</td><td class="p-2">1 대</td><td class="p-2 text-right">680,000</td><td class="p-2 text-right">680,000</td></tr>
+                <tr><td class="p-2">2-4. 스마트 CAN BMS &amp; 고전압 릴레이 (14S 200A BMS, AIR+/AIR- 2기, 프리차지)</td><td class="p-2">Buy (상용품)</td><td class="p-2">1 세트</td><td class="p-2 text-right">520,000</td><td class="p-2 text-right">520,000</td></tr>
+                <tr><td class="p-2">2-5. Cu-Ni 클래드 레이저 버스바 &amp; 방폭함 (0.3t OFC+0.1t Ni, UL94-V0 케이스)</td><td class="p-2">Make (레이저용접)</td><td class="p-2">1 세트</td><td class="p-2 text-right">440,000</td><td class="p-2 text-right">440,000</td></tr>
+                <tr><td class="p-2">2-6. STM32F767ZI VCU·센서·텔레메트리 (LSM6DSL, AS5147, 915MHz LoRa, OLED)</td><td class="p-2">Buy (Mouser)</td><td class="p-2">1 식</td><td class="p-2 text-right">260,000</td><td class="p-2 text-right">260,000</td></tr>
+                <tr><td class="p-2">2-7. 아날로그 BSPD·3중 래치 PCB &amp; 차폐 하네스 (4층 PCB, LEM 센서, STP/HV선)</td><td class="p-2">Make (JLCPCB)</td><td class="p-2">1 식</td><td class="p-2 text-right">330,000</td><td class="p-2 text-right">330,000</td></tr>
+                <!-- 3. 모터 구동계 -->
+                <tr><td class="p-2 font-bold text-emerald-300" rowspan="5">3. 모터 구동계<br>(3,100,000원)<br>[26.80 kg]</td><td class="p-2">3-1. QS-165 V2 5kW PMSM 듀얼모터 (정격 60V, 50N·m, 8.2kg, 방열핀 포함)</td><td class="p-2">Buy (QS Motor)</td><td class="p-2">2 대</td><td class="p-2 text-right">720,000</td><td class="p-2 text-right">1,440,000</td></tr>
+                <tr><td class="p-2">3-2. Al 7075-T651 2분할 퀵체인지 스프로킷 (54T 2개+52T 2개, 교내 CNC+아노다이징)</td><td class="p-2">Make (교내 CNC)</td><td class="p-2">4 개</td><td class="p-2 text-right">110,000</td><td class="p-2 text-right">440,000</td></tr>
+                <tr><td class="p-2">3-3. SAE 4340 박육 스캘럽 구동컵 (단품 580g, 교내 CNC 밀링 + 표면 질화 열처리)</td><td class="p-2">Make (교내 CNC)</td><td class="p-2">2 개</td><td class="p-2 text-right">190,000</td><td class="p-2 text-right">380,000</td></tr>
+                <tr><td class="p-2">3-4. SAE 4340 건드릴 중공 CV 반축 어셈블리 (Ø22×Ø12.5 중공축 + 트라이포드)</td><td class="p-2">Make (건드릴)</td><td class="p-2">2 세트</td><td class="p-2 text-right">240,000</td><td class="p-2 text-right">480,000</td></tr>
+                <tr><td class="p-2">3-5. 6061 동심 저널·무오링 #420 체인·가드 (6810 베어링, 14T 피니언, MoS2 체인)</td><td class="p-2">Make+Buy</td><td class="p-2">1 식</td><td class="p-2 text-right">360,000</td><td class="p-2 text-right">360,000</td></tr>
+                <!-- 4. 현가·휠 타이어 -->
+                <tr><td class="p-2 font-bold text-purple-300" rowspan="5">4. 현가·휠·타이어<br>(2,650,000원)<br>[39.40 kg]</td><td class="p-2">4-1. Al 7075-T651 위상최적화 업라이트 &amp; 허브 (640g, 교내 CNC, 7007AC 베어링)</td><td class="p-2">Make (교내 CNC)</td><td class="p-2">4 세트</td><td class="p-2 text-right">145,000</td><td class="p-2 text-right">580,000</td></tr>
+                <tr><td class="p-2">4-2. CFRP/크로몰리 하이브리드 위시본·푸시로드 (Ø16 카본관, 4130관, 7075 인서트)</td><td class="p-2">Make (교내 접착)</td><td class="p-2">1 식</td><td class="p-2 text-right">620,000</td><td class="p-2 text-right">620,000</td></tr>
+                <tr><td class="p-2">4-3. Al 7075-T6 위상최적화 벨크랭크 (워터젯+CNC, 이구스 부싱)</td><td class="p-2">Make (교내 가공)</td><td class="p-2">4 개</td><td class="p-2 text-right">35,000</td><td class="p-2 text-right">140,000</td></tr>
+                <tr><td class="p-2">4-4. 레이싱 코일오버 댐퍼 &amp; 경량 스프링 (범프/리바운드 감쇠력 조절식 4기)</td><td class="p-2">Buy (모터스포츠)</td><td class="p-2">4 개</td><td class="p-2 text-right">115,000</td><td class="p-2 text-right">460,000</td></tr>
+                <tr><td class="p-2">4-5. 10인치 3피스 경량 알루미늄 림 &amp; 슬릭 타이어 (18.0×6.0-10 슬릭 4본)</td><td class="p-2">Buy (타이어 유통)</td><td class="p-2">4 본</td><td class="p-2 text-right">212,500</td><td class="p-2 text-right">850,000</td></tr>
+                <!-- 5. 제동·조향계 -->
+                <tr><td class="p-2 font-bold text-rose-300" rowspan="5">5. 제동·조향계<br>(1,150,000원)<br>[13.60 kg]</td><td class="p-2">5-1. Al 7075 위상최적화 페달박스 &amp; 이중 APPS (285g 암, 역구배 홀센서×2, 유압센서)</td><td class="p-2">Make (교내 CNC)</td><td class="p-2">1 세트</td><td class="p-2 text-right">210,000</td><td class="p-2 text-right">210,000</td></tr>
+                <tr><td class="p-2">5-2. 듀얼 마스터 실린더 &amp; 밸런스 바 (전 Ø15.88[5/8"] / 후 Ø17.78[7/10"])</td><td class="p-2">Buy (Tilton/Wilwood)</td><td class="p-2">1 세트</td><td class="p-2 text-right">320,000</td><td class="p-2 text-right">320,000</td></tr>
+                <tr><td class="p-2">5-3. SUS420J2 플로팅 웨이브 로터 &amp; 벨 캐리어 (Ø180×3.5t 마찰링 + 7075 벨)</td><td class="p-2">Make (레이저+CNC)</td><td class="p-2">4 세트</td><td class="p-2 text-right">55,000</td><td class="p-2 text-right">220,000</td></tr>
+                <tr><td class="p-2">5-4. 2피스톤 알루미늄 캘리퍼·소결 패드·메쉬 호스 (캘리퍼 4기, DOT 5.1액)</td><td class="p-2">Buy (브레이크 상용)</td><td class="p-2">1 식</td><td class="p-2 text-right">220,000</td><td class="p-2 text-right">220,000</td></tr>
+                <tr><td class="p-2">5-5. 후치 경량 조향 랙 &amp; 카본 퀵릴리즈 스티어링 (기어비 4.2:1 랙, Ø250 카본 휠)</td><td class="p-2">Buy+Make</td><td class="p-2">1 식</td><td class="p-2 text-right">180,000</td><td class="p-2 text-right">180,000</td></tr>
+                <!-- 6. 에어로·콕핏 -->
+                <tr><td class="p-2 font-bold text-blue-300" rowspan="4">6. 에어로·콕핏<br>(750,000원)<br>[11.20 kg]</td><td class="p-2">6-1. CFRP-Rohacell 풀-플랫 벤투리 디퓨저 언더트레이 (팽창각 9.5°, 2.10kg, VaRTM)</td><td class="p-2">Make (교내 VaRTM)</td><td class="p-2">1 세트</td><td class="p-2 text-right">280,000</td><td class="p-2 text-right">280,000</td></tr>
+                <tr><td class="p-2">6-2. CFRP-Nomex 53° 리클라이닝 카본 쉘 시트 (1.65kg, 무공구 슬라이딩 레일)</td><td class="p-2">Make (교내 VaRTM)</td><td class="p-2">1 세트</td><td class="p-2 text-right">170,000</td><td class="p-2 text-right">170,000</td></tr>
+                <tr><td class="p-2">6-3. NACA 덕트 사이드포드 &amp; 노즈콘 바디 카울 (NACA 0012-64 덕트, 도색/데칼)</td><td class="p-2">Make (교내 복합재)</td><td class="p-2">1 식</td><td class="p-2 text-right">160,000</td><td class="p-2 text-right">160,000</td></tr>
+                <tr><td class="p-2">6-4. SFI 16.1 6점식 캠록 벨트 &amp; 헤드레스트 (퀵릴리즈 벨트 및 충격패드)</td><td class="p-2">Buy (레이싱 안전)</td><td class="p-2">1 세트</td><td class="p-2 text-right">140,000</td><td class="p-2 text-right">140,000</td></tr>
+                <!-- 7. 패스너·안전 -->
+                <tr><td class="p-2 font-bold text-slate-300" rowspan="2">7. 패스너·안전<br>(400,000원)<br>[14.60 kg]</td><td class="p-2">7-1. 10.9등급 볼트·올메탈 록너트·24-Tooth 톤링 (스텐 와이어링, LJ12A3 센서 4개)</td><td class="p-2">Buy+Make</td><td class="p-2">1 식</td><td class="p-2 text-right">210,000</td><td class="p-2 text-right">210,000</td></tr>
+                <tr><td class="p-2">7-2. 법정 안전장구 일체 (ABC 소화기 2기, E-Stop 3개, BOTS, 관성스위치, TSAL, 절연장갑)</td><td class="p-2">Buy (안전 규격품)</td><td class="p-2">1 식</td><td class="p-2 text-right">190,000</td><td class="p-2 text-right">190,000</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-        <button onclick="closeModal('cabinetModal')" class="w-9 h-9 rounded-lg bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 flex items-center justify-center transition">
-          <i class="fa-solid fa-xmark text-lg"></i>
-        </button>
-      </div>
 
-      <div class="p-6 space-y-6">
-
-        <p class="text-xs text-slate-300 font-mono">
-          대회 준비에 필요한 핵심 문서 및 팀원 공유 클라우드 저장소 링크입니다. 버튼을 누르면 링크 복사 또는 모의 열기가 수행됩니다.
-        </p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          
-          <!-- Doc 1 -->
-          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:border-blue-400 transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-blue-400 mb-2">
-                <i class="fa-solid fa-book-bookmark text-xl"></i>
-                <span class="text-[11px] font-mono bg-blue-500/20 px-2 py-0.5 rounded">공식 규정집</span>
-              </div>
-              <h4 class="text-sm font-bold text-white font-tech">2027 KSAE Formula EV 규정집 (PDF)</h4>
-              <p class="text-xs text-slate-400 mt-1">고전압 격리 규정, 범프 범퍼 치수 및 임팩트 어테뉴에이터(IA) 규격 가이드라인.</p>
+        <!-- Sub-tab 5: KSAE 4-Stage Scrutineering One-Pass Checklist (Sec 11) -->
+        <div id="mfg-scrutineering" class="mfg-subpane space-y-3 hidden">
+          <h4 class="text-sm text-blue-400 font-bold">KSAE 현장 기술검차(Scrutineering) 4단계 원패스 무결점 프로토콜 (Sec 11)</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-amber-400 font-bold block">Stage 1: 전기·배터리 안전 검차 (Electrical &amp; Accumulator)</span>
+              <p class="text-slate-300">① 만충 전압 57.4V(≤58.0V 규정) 및 15분 내 에너지미터 탈착 시연</p>
+              <p class="text-slate-300">② E-Stop 3개소, BOTS, 관성스위치 작동 시 AIR 개방 및 TSMP 0V 강하(&lt;3초)</p>
+              <p class="text-slate-300">③ Bender IR155-3204 테스트 포트에 25kΩ(&lt;500Ω/V) 연결 시 릴레이 차단 및 적색 IMD 경고등 하드웨어 래칭 확인</p>
+              <p class="text-slate-300">④ 함수발생기로 BSPD(&gt;87A &amp; &gt;30bar 500ms) 주입 시 하드웨어 셧다운 검증</p>
             </div>
-            <button onclick="copyDocLink('https://www.ksae.org/rule2027', '대회 공식 규정집 링크가 복사되었습니다.')" class="mt-4 w-full py-2 rounded-lg bg-blue-600/30 hover:bg-blue-600/50 text-blue-300 text-xs font-mono transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-link"></i> 규정 링크 복사하기
-            </button>
-          </div>
-
-          <!-- Doc 2 -->
-          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:border-cyan-400 transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-cyan-400 mb-2">
-                <i class="fa-solid fa-file-invoice text-xl"></i>
-                <span class="text-[11px] font-mono bg-cyan-500/20 px-2 py-0.5 rounded">전기 시스템 양식</span>
-              </div>
-              <h4 class="text-sm font-bold text-white font-tech">ESF (Electrical System Form) 초안</h4>
-              <p class="text-xs text-slate-400 mt-1">심사위원 제출용 퓨즈 정격 곡선, 배터리팩 밀폐 구조 및 와이어링 하네스 도면.</p>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-cyan-400 font-bold block">Stage 2: 섀시·기구 및 5초 비상탈출 검차 (Mechanical &amp; Egress)</span>
+              <p class="text-slate-300">① MRH(Z=+780mm)·FRH(Z=+450mm) Ø5.0mm 검차홀 2.0t 두께 측정 및 STKM13C 밀시트 제출</p>
+              <p class="text-slate-300">② 95% 더미(Percy) 및 최장신 드라이버 헬멧 상단-롤후프 여유 85mm(≥50mm) 확인</p>
+              <p class="text-slate-300">③ 고전압·현가·제동 체결부 나일론 록너트 0개(전수 스텐 와이어링/올메탈 록너트) 및 체인 가드(1.0t 철판) 확인</p>
+              <p class="text-slate-300">④ 풀 기어 착용 상태 비상탈출 3.1초(≤5.0초) 원패스 통과</p>
             </div>
-            <button onclick="copyDocLink('https://drive.google.com/team-esf-draft', 'ESF 구글 문서 링크가 복사되었습니다.')" class="mt-4 w-full py-2 rounded-lg bg-cyan-600/30 hover:bg-cyan-600/50 text-cyan-300 text-xs font-mono transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-share-nodes"></i> 팀 공유 ESF 열기
-            </button>
-          </div>
-
-          <!-- Doc 3 -->
-          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:border-amber-400 transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-amber-400 mb-2">
-                <i class="fa-brands fa-google-drive text-xl"></i>
-                <span class="text-[11px] font-mono bg-amber-500/20 px-2 py-0.5 rounded">클라우드 드라이브</span>
-              </div>
-              <h4 class="text-sm font-bold text-white font-tech">동아리 팀 Google Drive (전체)</h4>
-              <p class="text-xs text-slate-400 mt-1">Solidworks / Fusion 360 파트 파일, 회로 거버(Gerber) 파일, 영수증 증빙 폴더.</p>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-emerald-400 font-bold block">Stage 3: 45°/60° 틸트 테이블 및 우천 샤워 절연 검차 (Tilt &amp; Rain)</span>
+              <p class="text-slate-300">① 최장신 운전자 탑승 45° 경사 시 누유 0건 및 60° 경사(1.73g 상당) 시 내륜 휠 들림 0mm(전도 한계 66.27°) 통과</p>
+              <p class="text-slate-300">② 차량 전원 ON(HV 비활성, IMD 활성) 상태에서 120초간 인공 강우 살수 + 종료 후 120초 대기 동안 절연저항 10MΩ 이상 유지(IP65 방수 실링)</p>
             </div>
-            <button onclick="copyDocLink('https://drive.google.com/team-cloud-root', '구글 드라이브 주소가 복사되었습니다.')" class="mt-4 w-full py-2 rounded-lg bg-amber-600/30 hover:bg-amber-600/50 text-amber-300 text-xs font-mono transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-folder-tree"></i> 드라이브 주소 복사
-            </button>
-          </div>
-
-          <!-- Doc 4 -->
-          <div class="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 hover:border-emerald-400 transition flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between text-emerald-400 mb-2">
-                <i class="fa-solid fa-shield-halved text-xl"></i>
-                <span class="text-[11px] font-mono bg-emerald-500/20 px-2 py-0.5 rounded">안전 가이드</span>
-              </div>
-              <h4 class="text-sm font-bold text-white font-tech">차고지 고전압(HV) 작업 수칙</h4>
-              <p class="text-xs text-slate-400 mt-1">1000V 절연 장갑 착용 필수, 2인 1조 작업 원칙, 비상 절연봉 비치 위치 안내.</p>
+            <div class="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
+              <span class="text-rose-400 font-bold block">Stage 4: 동적 주행 및 40 km/h 4륜 락업 제동 검차 (Dynamic Brake)</span>
+              <p class="text-slate-300">① V_x = 40 km/h 이상 가속 후 브레이크 페달 1회 급조작 시 소프트 BSPD가 즉시 모터 토크를 0 N·m로 차단</p>
+              <p class="text-slate-300">② 듀얼 마스터 실린더(전 63.9 bar : 후 36.9 bar) 작동으로 전·후 4바퀴가 동시에 스키드 마크를 남기며 완전 락업(Lock-up) 정지 직후 자력 재출발 확인</p>
             </div>
-            <button onclick="showToast('🚨 안전 제1원칙: 고전압 작업 시 반드시 절연 장갑 및 안전모를 착용하세요!')" class="mt-4 w-full py-2 rounded-lg bg-emerald-600/30 hover:bg-emerald-600/50 text-emerald-300 text-xs font-mono transition flex items-center justify-center gap-2">
-              <i class="fa-solid fa-circle-info"></i> 안전 수칙 보기
-            </button>
           </div>
-
         </div>
 
       </div>
 
       <div class="p-6 border-t border-slate-800 bg-slate-900/90 flex justify-end">
-        <button onclick="closeModal('cabinetModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
+        <button onclick="closeModal('manufacturingModal')" class="px-5 py-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 text-sm font-medium transition">
           닫기
         </button>
       </div>
@@ -896,7 +1328,7 @@
   <!-- JAVASCRIPT LOGIC -->
   <script>
     /* =========================================================================
-       1. WEB AUDIO API SOUND EFFECTS (No external files required)
+       1. WEB AUDIO API SOUND EFFECTS
        ========================================================================= */
     let audioCtx = null;
     let soundEnabled = true;
@@ -925,9 +1357,7 @@
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + duration);
-      } catch (e) {
-        console.warn('Audio play restricted:', e);
-      }
+      } catch (e) {}
     }
 
     function playClick() { playTone(950, 'triangle', 0.04, 0.08); }
@@ -948,13 +1378,12 @@
     }
 
     /* =========================================================================
-       2. WEATHER & AMBIENT CANVAS SYSTEM (Sun, Rain, Neon Night)
+       2. WEATHER & AMBIENT CANVAS SYSTEM
        ========================================================================= */
     const canvas = document.getElementById('weatherCanvas');
     const ctx = canvas.getContext('2d');
-    let currentWeather = 'sun'; // 'sun', 'rain', 'night'
+    let currentWeather = 'sun';
     let particles = [];
-    let animationFrameId;
 
     function resizeCanvas() {
       canvas.width = window.innerWidth;
@@ -983,41 +1412,29 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (currentWeather === 'rain') {
-        // Rain Drops
         ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
         ctx.lineWidth = 1.2;
         ctx.lineCap = 'round';
-
         for (let p of particles) {
           ctx.beginPath();
           ctx.moveTo(p.x, p.y);
           ctx.lineTo(p.x - 2, p.y + p.length);
           ctx.stroke();
-
           p.y += p.speed * 1.4;
           p.x -= 1;
-          if (p.y > canvas.height) {
-            p.y = -20;
-            p.x = Math.random() * canvas.width;
-          }
+          if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
         }
       } else if (currentWeather === 'sun') {
-        // Floating Sun Dust Motes
         for (let p of particles) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 235, 160, ${p.alpha * 0.4})`;
           ctx.fill();
-
           p.y -= 0.35;
           p.x += p.drift * 0.4;
-          if (p.y < 0) {
-            p.y = canvas.height + 10;
-            p.x = Math.random() * canvas.width;
-          }
+          if (p.y < 0) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
         }
       } else if (currentWeather === 'night') {
-        // Neon Night Cyber Ambient Sparks
         for (let p of particles) {
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.radius * 1.3, 0, Math.PI * 2);
@@ -1026,31 +1443,22 @@
           ctx.shadowColor = '#00f0ff';
           ctx.fill();
           ctx.shadowBlur = 0;
-
           p.y -= 0.6;
           p.x += p.drift * 0.6;
-          if (p.y < 0) {
-            p.y = canvas.height + 10;
-            p.x = Math.random() * canvas.width;
-          }
+          if (p.y < 0) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
         }
       }
-
-      animationFrameId = requestAnimationFrame(renderWeather);
+      requestAnimationFrame(renderWeather);
     }
 
     function setWeather(mode) {
       currentWeather = mode;
       playBeep();
-      
-      // Update UI button styles
       document.querySelectorAll('.weather-btn').forEach(btn => {
         btn.classList.remove('bg-cyan-500', 'text-black', 'font-semibold');
         btn.classList.add('text-slate-400');
       });
-
       const ambientLight = document.getElementById('ambientLight');
-
       if (mode === 'sun') {
         document.getElementById('btnSun').classList.add('bg-cyan-500', 'text-black', 'font-semibold');
         ambientLight.className = "absolute -top-32 left-1/2 -translate-x-1/2 w-3/4 h-64 bg-cyan-500/10 blur-3xl pointer-events-none rounded-full";
@@ -1058,27 +1466,24 @@
       } else if (mode === 'rain') {
         document.getElementById('btnRain').classList.add('bg-cyan-500', 'text-black', 'font-semibold');
         ambientLight.className = "absolute -top-32 left-1/2 -translate-x-1/2 w-3/4 h-64 bg-blue-600/20 blur-3xl pointer-events-none rounded-full";
-        showToast('🌧️ 우천 모드: 트랙 웻(Wet) 타이어 세팅 점검 요망');
+        showToast('🌧️ 우천 모드: Stage 3 인공 강우 절연 검차(10MΩ 이상) 대비');
       } else if (mode === 'night') {
         document.getElementById('btnNight').classList.add('bg-cyan-500', 'text-black', 'font-semibold');
         ambientLight.className = "absolute -top-32 left-1/2 -translate-x-1/2 w-3/4 h-64 bg-fuchsia-600/25 blur-3xl pointer-events-none rounded-full";
         showToast('🌙 야간 정비 네온 모드 활성화');
       }
-
       initParticles();
     }
 
     /* =========================================================================
-       3. MODAL CONTROLS & INTERACTION
+       3. MODAL & SUB-TAB CONTROLS
        ========================================================================= */
     function openModal(id) {
       playClick();
       const modal = document.getElementById(id);
       if (modal) {
         modal.classList.remove('hidden');
-        setTimeout(() => {
-          modal.classList.remove('opacity-0');
-        }, 10);
+        setTimeout(() => modal.classList.remove('opacity-0'), 10);
       }
     }
 
@@ -1087,31 +1492,46 @@
       const modal = document.getElementById(id);
       if (modal) {
         modal.classList.add('opacity-0');
-        setTimeout(() => {
-          modal.classList.add('hidden');
-        }, 300);
+        setTimeout(() => modal.classList.add('hidden'), 300);
       }
     }
 
-    // Close on clicking backdrop
     window.addEventListener('click', (e) => {
-      if (e.target.classList.contains('modal-wrapper')) {
-        closeModal(e.target.id);
-      }
+      if (e.target.classList.contains('modal-wrapper')) closeModal(e.target.id);
     });
 
-    // Close on Escape key
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
-        document.querySelectorAll('.modal-wrapper:not(.hidden)').forEach(modal => {
-          closeModal(modal.id);
-        });
+        document.querySelectorAll('.modal-wrapper:not(.hidden)').forEach(modal => closeModal(modal.id));
       }
     });
 
-    /* =========================================================================
-       4. CAR TURNTABLE ROTATION
-       ========================================================================= */
+    function switchSubTab(group, targetId, btnElem) {
+      playClick();
+      if (group === 'analysis') {
+        document.querySelectorAll('.analysis-subpane').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.analysis-tab-btn').forEach(b => {
+          b.className = 'analysis-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap';
+        });
+        document.getElementById(targetId).classList.remove('hidden');
+        btnElem.className = 'analysis-tab-btn px-3.5 py-2 rounded-t-lg bg-emerald-500/20 text-emerald-300 border-b-2 border-emerald-400 font-bold whitespace-nowrap';
+      } else if (group === 'wiring') {
+        document.querySelectorAll('.wiring-subpane').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.wiring-tab-btn').forEach(b => {
+          b.className = 'wiring-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap';
+        });
+        document.getElementById(targetId).classList.remove('hidden');
+        btnElem.className = 'wiring-tab-btn px-3.5 py-2 rounded-t-lg bg-rose-500/20 text-rose-300 border-b-2 border-rose-400 font-bold whitespace-nowrap';
+      } else if (group === 'mfg') {
+        document.querySelectorAll('.mfg-subpane').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.mfg-tab-btn').forEach(b => {
+          b.className = 'mfg-tab-btn px-3.5 py-2 rounded-t-lg text-slate-400 hover:text-white whitespace-nowrap';
+        });
+        document.getElementById(targetId).classList.remove('hidden');
+        btnElem.className = 'mfg-tab-btn px-3.5 py-2 rounded-t-lg bg-blue-500/20 text-blue-300 border-b-2 border-blue-400 font-bold whitespace-nowrap';
+      }
+    }
+
     function rotateCar(degrees) {
       const car = document.getElementById('turntableCar');
       const text = document.getElementById('angleValue');
@@ -1122,202 +1542,225 @@
     }
 
     /* =========================================================================
-       5. TELEMETRY REALTIME SIMULATION & CANVAS
+       4. EDITABLE TEAM ROSTER (작전 화이트보드 부서장 및 부서원 편집 기능)
        ========================================================================= */
-    let telemetryRunning = true;
-    let waveOffset = 0;
+    const defaultDepartments = [
+      {
+        id: 'dept1',
+        name: '⚡ 배터리·파워트레인부',
+        leader: '최용재',
+        members: '김태호, 강민수, 정유나',
+        role: '58V Molicel P45B 탭리스 팩, QS-165 V2 듀얼모터, 스플릿 스프로킷·구동계'
+      },
+      {
+        id: 'dept2',
+        name: '🏎️ 섀시·에어로다이내믹스부',
+        leader: '이지훈',
+        members: '박성민, 최현우',
+        role: 'STKM13C 프레임 지그 용접, Al 7075 업라이트, 벤투리 디퓨저 언더트레이'
+      },
+      {
+        id: 'dept3',
+        name: '💻 전장·제어펌웨어부',
+        leader: '박서연',
+        members: '윤도현, 김민재',
+        role: 'STM32F767ZI 100Hz DYC/500Hz 슬립율 제어, 아날로그 BSPD, STP CAN-FD 하네스'
+      },
+      {
+        id: 'dept4',
+        name: '📋 기획·안전검차·재무부',
+        leader: '한지민',
+        members: '송우진',
+        role: '설계보고서(150점)·원가 BOM(1,485만원) 관리 및 KSAE 4단계 기술검차 대응'
+      }
+    ];
 
-    function initTelemetryMiniCanvas() {
-      const mini = document.getElementById('miniTelemetryWave');
-      if (!mini) return;
-      const mctx = mini.getContext('2d');
-      mini.width = mini.clientWidth;
-      mini.height = mini.clientHeight;
+    function loadDepartments() {
+      const saved = localStorage.getItem('team_dynamics_departments_2027');
+      return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultDepartments));
+    }
 
-      function drawMiniWave() {
-        mctx.clearRect(0, 0, mini.width, mini.height);
-        mctx.beginPath();
-        mctx.strokeStyle = '#39ff14';
-        mctx.lineWidth = 2;
+    function renderDepartments() {
+      const depts = loadDepartments();
+      const editorContainer = document.getElementById('departmentEditorContainer');
+      const summaryContainer = document.getElementById('mainBoardLeaderSummary');
 
-        for (let x = 0; x < mini.width; x++) {
-          const y = mini.height / 2 + Math.sin((x + waveOffset) * 0.08) * 16 + (Math.random() * 4 - 2);
-          if (x === 0) mctx.moveTo(x, y);
-          else mctx.lineTo(x, y);
+      if (editorContainer) {
+        editorContainer.innerHTML = '';
+        depts.forEach((d, idx) => {
+          const card = document.createElement('div');
+          card.className = 'p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2.5 relative';
+          card.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <input type="text" data-idx="${idx}" data-field="name" value="${d.name}" class="dept-input w-full bg-slate-900 border border-slate-700 focus:border-amber-400 rounded px-2.5 py-1 text-xs font-mono font-bold text-amber-300 outline-none" placeholder="부서명 입력">
+              <button onclick="removeDepartment(${idx})" title="부서 삭제" class="text-slate-500 hover:text-rose-400 px-1.5 py-1 text-xs transition">
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-0.5">부서장 (파트장)</label>
+                <input type="text" data-idx="${idx}" data-field="leader" value="${d.leader}" class="dept-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded px-2.5 py-1.5 text-white font-semibold outline-none" placeholder="부서장 이름">
+              </div>
+              <div>
+                <label class="text-[10px] text-slate-400 block mb-0.5">부서원 명단</label>
+                <input type="text" data-idx="${idx}" data-field="members" value="${d.members}" class="dept-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded px-2.5 py-1.5 text-slate-200 outline-none" placeholder="쉼표(,)로 구분">
+              </div>
+            </div>
+            <div class="text-xs font-mono">
+              <label class="text-[10px] text-slate-400 block mb-0.5">담당 엔지니어링 과업 (R&R)</label>
+              <input type="text" data-idx="${idx}" data-field="role" value="${d.role}" class="dept-input w-full bg-slate-900 border border-slate-700 focus:border-cyan-400 rounded px-2.5 py-1 text-slate-300 text-[11px] outline-none" placeholder="담당 업무 요약">
+            </div>
+          `;
+          editorContainer.appendChild(card);
+        });
+      }
+
+      if (summaryContainer) {
+        summaryContainer.innerHTML = depts.map(d => {
+          const shortName = d.name.replace(/^[^\w가-힣]+/, '').trim();
+          const memberCount = d.members ? d.members.split(',').filter(s => s.trim() !== '').length : 0;
+          return `<div>• <span class="text-white font-semibold">${shortName}:</span> <span class="text-amber-300">${d.leader || '미정'}</span> <span class="text-slate-400">(부서원 ${memberCount}명)</span></div>`;
+        }).join('');
+      }
+    }
+
+    function saveDepartmentsFromInputs() {
+      playBeep();
+      const depts = loadDepartments();
+      document.querySelectorAll('.dept-input').forEach(input => {
+        const idx = parseInt(input.getAttribute('data-idx'), 10);
+        const field = input.getAttribute('data-field');
+        if (depts[idx] && field) {
+          depts[idx][field] = input.value.trim();
         }
-        mctx.stroke();
-        if (telemetryRunning) waveOffset += 2;
-        requestAnimationFrame(drawMiniWave);
-      }
-      drawMiniWave();
-    }
-
-    // Modal Live Wave Canvas
-    const liveChart = document.getElementById('liveTelemetryChart');
-    let liveCtx = liveChart ? liveChart.getContext('2d') : null;
-    let chartData = Array(60).fill(4000);
-
-    function drawLiveChart() {
-      if (!liveChart || !liveCtx) return;
-      liveChart.width = liveChart.clientWidth;
-      liveChart.height = liveChart.clientHeight;
-
-      liveCtx.clearRect(0, 0, liveChart.width, liveChart.height);
-      
-      // Grid lines
-      liveCtx.strokeStyle = 'rgba(255,255,255,0.06)';
-      liveCtx.lineWidth = 1;
-      for (let y = 0; y < liveChart.height; y += 25) {
-        liveCtx.beginPath();
-        liveCtx.moveTo(0, y);
-        liveCtx.lineTo(liveChart.width, y);
-        liveCtx.stroke();
-      }
-
-      // Draw RPM Line
-      liveCtx.beginPath();
-      liveCtx.strokeStyle = '#00f0ff';
-      liveCtx.lineWidth = 2.5;
-      const step = liveChart.width / (chartData.length - 1);
-
-      chartData.forEach((val, i) => {
-        // Map 0-6500 to canvas height
-        const normY = liveChart.height - ((val / 6500) * (liveChart.height - 20) + 10);
-        if (i === 0) liveCtx.moveTo(0, normY);
-        else liveCtx.lineTo(i * step, normY);
       });
-      liveCtx.stroke();
+      localStorage.setItem('team_dynamics_departments_2027', JSON.stringify(depts));
+      renderDepartments();
+      showToast('✅ 파트별 부서장 및 부서원 명단이 저장되었습니다!');
     }
 
-    // Simulate fluctuating values
-    setInterval(() => {
-      if (!telemetryRunning) return;
-      const rpm = Math.floor(4100 + Math.sin(Date.now() / 800) * 800 + Math.random() * 300);
-      const soc = (94.2 - (Date.now() % 100000) * 0.00002).toFixed(1);
-      const temp = (36.2 + Math.random() * 0.6).toFixed(1);
-      const cur = Math.floor(105 + Math.random() * 20);
-
-      const rElem = document.getElementById('gaugeRpm');
-      const sElem = document.getElementById('gaugeSoc');
-      const tElem = document.getElementById('gaugeTemp');
-      const cElem = document.getElementById('gaugeCurrent');
-
-      if (rElem) rElem.innerText = rpm.toLocaleString();
-      if (sElem) sElem.innerText = `${soc} %`;
-      if (tElem) tElem.innerText = `${temp} °C`;
-      if (cElem) cElem.innerText = `${cur} A`;
-
-      chartData.shift();
-      chartData.push(rpm);
-      drawLiveChart();
-    }, 250);
-
-    function toggleTelemetrySim() {
-      telemetryRunning = !telemetryRunning;
+    function addNewDepartment() {
       playClick();
-      const btn = document.getElementById('telemetryToggleBtn');
-      if (telemetryRunning) {
-        btn.innerText = '일시정지';
-        btn.className = 'px-3 py-1 text-xs font-mono rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-500/30 transition';
-        showToast('실시간 텔레메트리 스트리밍 재개');
-      } else {
-        btn.innerText = '재개하기';
-        btn.className = 'px-3 py-1 text-xs font-mono rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30 transition';
-        showToast('텔레메트리 스트림 일시 정지');
-      }
+      saveDepartmentsFromInputs();
+      const depts = loadDepartments();
+      depts.push({
+        id: 'dept_' + Date.now(),
+        name: '🔧 신규 엔지니어링 파트',
+        leader: '부서장 입력',
+        members: '부서원1, 부서원2',
+        role: '담당 설계·해석·제작 업무 입력'
+      });
+      localStorage.setItem('team_dynamics_departments_2027', JSON.stringify(depts));
+      renderDepartments();
+      showToast('새 부서가 추가되었습니다. 내용을 수정한 뒤 저장하세요.');
+    }
+
+    function removeDepartment(idx) {
+      playHeavy();
+      const depts = loadDepartments();
+      depts.splice(idx, 1);
+      localStorage.setItem('team_dynamics_departments_2027', JSON.stringify(depts));
+      renderDepartments();
+      showToast('해당 부서가 삭제되었습니다.');
+    }
+
+    function resetDepartments() {
+      playHeavy();
+      localStorage.setItem('team_dynamics_departments_2027', JSON.stringify(defaultDepartments));
+      renderDepartments();
+      showToast('부서 편성표가 기본값으로 초기화되었습니다.');
     }
 
     /* =========================================================================
-       6. SCRUTINEERING CHECKLIST (LOCALSTORAGE SUPPORT)
+       5. 10-STEP BUILD SEQUENCE CHECKLIST (제작 탭 연동)
        ========================================================================= */
-    const defaultChecklist = [
-      { id: 'item1', title: 'TSAL (Tractive System Active Light) 램프 점등 테스트', desc: '고전압 60V 초과 시 즉각 적색 점멸, 셧다운 시 녹색 점등 확인', done: true },
-      { id: 'item2', title: '비상 컷오프(Cockpit & Side Shutdown) 스위치 3개 연동 차단', desc: '운전석 및 롤후프 양 측면 마스터 스위치 누름 시 0.2초 내 AIR 트립', done: true },
-      { id: 'item3', title: 'IMD (절연 감시 장비) 500Ω/V 절연저항 셧다운 시험', desc: '고전압 버스와 섀시 접지 간 인위적 누전 시 3초 이내 시스템 락다운', done: true },
-      { id: 'item4', title: 'BSP (Brake System Plausibility Device) 센서 연동', desc: '가속 페달 25% 이상 밟은 채 브레이크 강하게 작동 시 모터 토크 제로화', done: true },
-      { id: 'item5', title: '어큐뮬레이터 방화벽(Firewall) 및 배터리 컨테이너 실링', desc: '드라이버 격벽 알루미늄/케블라 차폐 규격 및 IP65 방수방진 실링', done: true },
-      { id: 'item6', title: '레인 라이트(Rain Light) 독립 구동 스위치 및 방수 테스트', desc: '우천 주행 시 후방 시인성을 위한 4W 이상 고휘도 적색 LED 점등', done: false }
+    const defaultBuildSteps = [
+      { id: 'step1', title: 'Step 1: 5.0t 박스 지그 세팅 및 베어 프레임 가용접·본용접', desc: '정반 위 5.0t SS400 박스 지그 조립, 68개 STKM13C 레이저 노칭 파이프 탭-앤-슬롯 결합 → 대칭 스킵 TIG 본용접 → 자연 냉각', done: true },
+      { id: 'step2', title: 'Step 2: 전 브라켓·마운트 탭 용접 + 비파괴 검사 [★도색 전 필수 게이트]', desc: '위시본·벨크랭크·조향랙·페달박스·시트·방화벽·모터/배터리 탭 용접 후 1차 가조립(Dry-Fit) 간섭 0건 확인, 침투탐상(PT) 및 MRH/FRH Ø5.0mm 검차홀 가공', done: true },
+      { id: 'step3', title: 'Step 3: 프레임 방청·분체도장 및 바닥 언더트레이·방화벽 리벳 체결', desc: '프레임 도색 후 차체 바닥 평판과 Zone 3/4 경계 이중 방화벽(0.6t 알루미늄+난연시트)을 실리콘 실란트 및 구조용 블라인드 리벳으로 밀폐 체결', done: false },
+      { id: 'step4', title: 'Step 4: 브레이크 동관/메쉬 호스 및 메인 LV/HV 하네스 선행 포설 [★핵심 공정]', desc: '빈 프레임 상태에서 페달박스·듀얼 MC와 브레이크 라인(우측 하단), 메인 CAN-FD/SDC 하네스(좌측 상단), HV 오렌지 케이블을 클램프로 선행 고정', done: false },
+      { id: 'step5', title: 'Step 5: 현가 위시본·업라이트·허브·댐퍼 및 조향 랙/칼럼 조립', desc: '전·후 더블 위시본, 푸시로드, 벨크랭크, 코일오버 댐퍼, Al 7075 업라이트(640g), 플로팅 로터, 캘리퍼, 후치 조향 랙 장착 및 10.9등급 볼트 토크 체결', done: false },
+      { id: 'step6', title: 'Step 6: 롤링 섀시 완성·브레이크 에어 빼기 및 1차 스트링 얼라인먼트', desc: '4바퀴 휠·타이어 장착 후 지면 안착(Rolling Chassis), DOT 5.1 진공 에어 빼기(Bleeding) 및 1차 스트링 얼라인먼트(전 토우아웃 -0.3° / 후 토우인 +0.2°)', done: false },
+      { id: 'step7', title: 'Step 7: Zone 5 인보드 듀얼모터·동심 베어링 저널·스프로킷·체인 조립', desc: 'QS-165 V2 듀얼모터, Al 6061 동심 저널, SAE 4340 구동컵, 54T/52T 스플릿 스프로킷, 건드릴 중공 반축 결합 및 무오링 #420 체인·1.0t 철판 가드 장착', done: false },
+      { id: 'step8', title: 'Step 8: Zone 4 58V 배터리팩·인버터·BSPD 전장 박스 및 에너지미터 장착', desc: 'Molicel P45B 배터리팩(HV 인터록 OFF), ND72530 인버터 2기, 아날로그 BSPD·IMD·AMS 래치 박스, STM32 VCU 장착 및 Deutsch 방수 커넥터 체결', done: false },
+      { id: 'step9', title: 'Step 9: 무부하 리프트 HV 시동·안전 회로 벤치 검증 및 4륜 코너웨이트 세팅', desc: '후륜 잭스탠드 리프트 상태에서 LV 투입 → IMD/BSPD/E-Stop 차단 시험 → 프리차지(1.2초)·AIR 투입 → 이중 APPS 검증 후 지면 4륜 코너웨이트(50.0%) 세팅', done: false },
+      { id: 'step10', title: 'Step 10: 53° 카본 시트·6점식 벨트·NACA 사이드포드 카울 장착 및 100km 롤아웃', desc: '카본 쉘 시트, 6점식 벨트, 노즈콘(허니컴 IA), NACA 냉각 덕트, 리어 벤투리 디퓨저 최종 장착 후 교내 4단계 모의 검차 및 100km 트랙 셰이크다운 돌입', done: false }
     ];
 
-    function loadChecklist() {
-      const stored = localStorage.getItem('ksae_checklist_2027');
-      return stored ? JSON.parse(stored) : defaultChecklist;
+    function loadBuildSteps() {
+      const saved = localStorage.getItem('team_dynamics_build_steps_2027');
+      return saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultBuildSteps));
     }
 
-    function saveChecklist(items) {
-      localStorage.setItem('ksae_checklist_2027', JSON.stringify(items));
-      updateChecklistUI();
-    }
-
-    function toggleCheckItem(id) {
+    function toggleBuildStep(id) {
       playClick();
-      const items = loadChecklist();
-      const target = items.find(i => i.id === id);
+      const steps = loadBuildSteps();
+      const target = steps.find(s => s.id === id);
       if (target) {
         target.done = !target.done;
-        saveChecklist(items);
-        showToast(target.done ? `✓ [검차 완료] ${target.title}` : `[점검 대기] ${target.title}`);
+        localStorage.setItem('team_dynamics_build_steps_2027', JSON.stringify(steps));
+        renderBuildSteps();
+        showToast(target.done ? `✓ [공정 완료] ${target.title}` : `[공정 대기] ${target.title}`);
       }
     }
 
-    function resetChecklist() {
+    function resetBuildSteps() {
       playHeavy();
-      saveChecklist(defaultChecklist);
-      showToast('검차 항목이 기본값으로 초기화되었습니다.');
+      localStorage.setItem('team_dynamics_build_steps_2027', JSON.stringify(defaultBuildSteps));
+      renderBuildSteps();
+      showToast('10단계 제작 공정 체크리스트가 초기화되었습니다.');
     }
 
-    function updateChecklistUI() {
-      const items = loadChecklist();
-      const container = document.getElementById('checklistContainer');
+    function renderBuildSteps() {
+      const steps = loadBuildSteps();
+      const container = document.getElementById('buildStepsContainer');
       if (!container) return;
 
       container.innerHTML = '';
       let doneCount = 0;
 
-      items.forEach(item => {
-        if (item.done) doneCount++;
-
+      steps.forEach(step => {
+        if (step.done) doneCount++;
         const row = document.createElement('div');
         row.className = `p-3.5 rounded-xl border transition-all cursor-pointer flex items-start space-x-3 ${
-          item.done ? 'bg-slate-900/90 border-emerald-500/40 text-slate-200' : 'bg-slate-950/70 border-slate-800 text-slate-400 hover:border-slate-700'
+          step.done ? 'bg-slate-900/90 border-blue-500/40 text-slate-200' : 'bg-slate-950/70 border-slate-800 text-slate-400 hover:border-slate-700'
         }`;
-        row.onclick = () => toggleCheckItem(item.id);
+        row.onclick = () => toggleBuildStep(step.id);
 
         row.innerHTML = `
-          <div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center font-bold text-xs border ${
-            item.done ? 'bg-emerald-500 text-black border-emerald-400' : 'bg-slate-800 text-transparent border-slate-700'
+          <div class="mt-0.5 w-5 h-5 rounded flex items-center justify-center font-bold text-xs border shrink-0 ${
+            step.done ? 'bg-blue-500 text-black border-blue-400' : 'bg-slate-800 text-transparent border-slate-700'
           }">
             ✓
           </div>
           <div class="flex-1">
-            <h5 class="text-sm font-semibold ${item.done ? 'text-white' : 'text-slate-300'}">${item.title}</h5>
-            <p class="text-xs text-slate-400 mt-0.5">${item.desc}</p>
+            <h5 class="text-xs sm:text-sm font-bold ${step.done ? 'text-white' : 'text-slate-300'}">${step.title}</h5>
+            <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">${step.desc}</p>
           </div>
-          <span class="text-[11px] font-mono px-2 py-0.5 rounded ${
-            item.done ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/10 text-rose-400'
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded shrink-0 ${
+            step.done ? 'bg-blue-500/20 text-blue-300' : 'bg-slate-800 text-slate-500'
           }">
-            ${item.done ? '통과 PASS' : '미통과 OPEN'}
+            ${step.done ? 'DONE' : 'WAIT'}
           </span>
         `;
         container.appendChild(row);
       });
 
-      // Update Card Progress in Main Screen
-      const pct = Math.round((doneCount / items.length) * 100);
-      const textElem = document.getElementById('checklistProgressText');
-      const barElem = document.getElementById('checklistProgressBar');
-      if (textElem) textElem.innerText = `${pct}% (${doneCount}/${items.length})`;
+      const pct = Math.round((doneCount / steps.length) * 100);
+      const textElem = document.getElementById('buildProgressText');
+      const barElem = document.getElementById('buildProgressBar');
+      if (textElem) textElem.innerText = `${pct}% (${doneCount}/${steps.length})`;
       if (barElem) barElem.style.width = `${pct}%`;
     }
 
     /* =========================================================================
-       7. UTILITIES & TOAST NOTIFICATION
+       6. UTILITIES & COPY / CLOCK
        ========================================================================= */
     function showToast(message) {
       const toast = document.getElementById('toastNotification');
       const msg = document.getElementById('toastMsg');
       if (!toast || !msg) return;
-
       msg.innerText = message;
       toast.classList.remove('translate-y-20', 'opacity-0');
       clearTimeout(window.toastTimer);
@@ -1326,59 +1769,48 @@
       }, 2600);
     }
 
-    function copyDocLink(url, successMsg) {
-      playClick();
-      // Safe fallback clipboard copy
-      const tempInput = document.createElement("input");
-      tempInput.value = url;
-      document.body.appendChild(tempInput);
-      tempInput.select();
+    function copyFirmwareCode() {
+      playBeep();
+      const codeElem = document.getElementById('stm32CodeBlock');
+      if (!codeElem) return;
+      const temp = document.createElement('textarea');
+      temp.value = codeElem.innerText;
+      document.body.appendChild(temp);
+      temp.select();
       try {
-        document.execCommand("copy");
-        showToast(successMsg || "링크가 클립보드에 복사되었습니다.");
-      } catch (err) {
-        showToast("링크 복사 지원 안 됨: " + url);
+        document.execCommand('copy');
+        showToast('💻 STM32F767ZI C언어 펌웨어 코드가 클립보드에 복사되었습니다!');
+      } catch (e) {
+        showToast('복사 실패: 코드 블록을 직접 드래그하여 복사하세요.');
       }
-      document.body.removeChild(tempInput);
+      document.body.removeChild(temp);
     }
 
-    // Realtime Clock & D-Day Updater
     function updateClockAndDDay() {
       const now = new Date();
       const clockElem = document.getElementById('liveClock');
       const dateElem = document.getElementById('currentDateStr');
-      if (clockElem) {
-        clockElem.innerText = now.toTimeString().split(' ')[0];
-      }
+      if (clockElem) clockElem.innerText = now.toTimeString().split(' ')[0];
       if (dateElem) {
         dateElem.innerText = `${now.getFullYear()}. ${(now.getMonth()+1).toString().padStart(2,'0')}. ${now.getDate().toString().padStart(2,'0')}`;
       }
-
-      // KSAE 2027 Target Date: Approx October 1, 2027
       const target = new Date(2027, 9, 1);
-      const diffTime = target - now;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const diffDays = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
       const ddayElem = document.getElementById('ddayCount');
-      if (ddayElem) {
-        ddayElem.innerText = diffDays > 0 ? `D-${diffDays}` : `D-DAY`;
-      }
+      if (ddayElem) ddayElem.innerText = diffDays > 0 ? `D-${diffDays}` : `D-DAY`;
     }
 
-    /* =========================================================================
-       8. INITIALIZATION ON WINDOW LOAD
-       ========================================================================= */
     window.onload = function () {
       resizeCanvas();
       renderWeather();
-      initTelemetryMiniCanvas();
-      updateChecklistUI();
+      renderDepartments();
+      renderBuildSteps();
       updateClockAndDDay();
       setInterval(updateClockAndDDay, 1000);
 
-      // Warm greeting toast
       setTimeout(() => {
-        showToast('🏁 2027 KSAE E-Mobility Paddock에 오신 것을 환영합니다!');
-      }, 600);
+        showToast('🏁 한남대학교 Team_Dynamics 워크스테이션(v13.0)이 로드되었습니다.');
+      }, 500);
     };
   </script>
 </body>
