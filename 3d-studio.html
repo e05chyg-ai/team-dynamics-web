@@ -62,7 +62,8 @@ canvas.onpointerdown=e=>{down=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCa
 </script><script>
 (function(){
   function fit(){
-    const height=Math.ceil(Math.max(document.documentElement.scrollHeight,document.body.scrollHeight));
+    const content=document.querySelector('main.wrap');
+    const height=Math.ceil(content ? content.getBoundingClientRect().bottom + 4 : document.body.getBoundingClientRect().bottom + 4);
     window.parent.postMessage({type:'TD_3D_FIT_HEIGHT',height},location.origin);
   }
   window.addEventListener('load',fit);
